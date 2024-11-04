@@ -2,7 +2,9 @@
   "name": "automation",
   "version": "0.1.0",
   "private": true,
-  "scripts": {},
+  "scripts": {
+  "test": "playwright test"
+},
   "devDependencies": {
     "@playwright/test": "^1.48.2",
     "@types/node": "^20",

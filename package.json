@@ -1,0 +1,17 @@
+{
+  "name": "automation-solution",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:nextapp": "pnpm --filter nextapp dev",
+    "test:automation": "pnpm --filter automation test",
+    "build:nextapp": "pnpm --filter nextapp build",
+    "lint": "pnpm -r lint",
+    "format": "pnpm -r format"
+  },
+  "devDependencies": {}
+}
