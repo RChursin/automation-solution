@@ -48,20 +48,78 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
   }
-}
 
-@font-face {
-  font-family: 'HackNerdFontMono-Regular';
-  src: url('../../public/fonts/HackNerdFontMono-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
+  /* Font configuration */
+  @font-face {
+    font-family: 'Monoid Nerd Font Mono';
+    src: url('/fonts/MonoidNerdFontMono-Retina.ttf') format('truetype');
+    font-display: swap;
+    font-weight: normal;
+    font-style: normal;
+  }
 
-@layer base {
+  /* Base styles */
   * {
     @apply border-border;
   }
+
+  html {
+    @apply text-base; /* This will now use your larger base size */
+    @apply overflow-x-hidden;
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Optional: Make headings larger by default */
+  h1 {
+    @apply text-4xl font-bold;
+  }
+  h2 {
+    @apply text-3xl font-bold;
+  }
+  h3 {
+    @apply text-2xl font-bold;
+  }
+  h4 {
+    @apply text-xl font-bold;
+  }
+  h5 {
+    @apply text-lg font-bold;
+  }
+  h6 {
+    @apply text-base font-bold;
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 640px) {
+    button, 
+    a {
+      @apply min-h-[44px] min-w-[44px];
+    }
+    
+    input, 
+    select, 
+    textarea {
+      @apply text-base;
+    }
+  }
+}
+
+@layer utilities {
+  /* Scrollbar utilities */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }

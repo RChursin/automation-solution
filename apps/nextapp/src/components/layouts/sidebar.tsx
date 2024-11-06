@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Beer, PinIcon, FolderKanban, BookOpen } from 'lucide-react';
+import { Home, Beer, Code, FolderKanban, BookOpen, X } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Button } from '../../components/ui/button';
 import { Card } from '../../components/ui/card';
@@ -15,29 +15,52 @@ interface NavItem {
   icon: typeof Home;
 }
 
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
 const navigation: NavItem[] = [
   { name: 'Home', href: '/home', icon: Home },
   { name: 'Projects', href: '/projects', icon: FolderKanban },
   { name: 'Blog', href: '/blog', icon: BookOpen },
 ];
 
-export function Sidebar() {
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <Card className="fixed left-0 top-0 z-40 h-screen w-64 rounded-none border-r bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <Card className={cn(
+      "fixed left-0 top-0 z-40 h-screen w-[280px] rounded-none border-r bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+      "transition-transform duration-300 ease-in-out lg:translate-x-0",
+      isOpen ? "translate-x-0" : "-translate-x-full"
+    )}>
       <div className="flex h-full flex-col px-4 py-8">
-        {/* Logo - explicitly using forward slash for root */}
-        <Link
-          href="/"
-          className={cn(
-            'flex items-center gap-2 text-foreground',
-            pathname === '/' && 'text-primary',
-          )}
+        {/* Mobile Close Button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute right-4 top-4 lg:hidden"
+          onClick={onClose}
         >
-          <PinIcon className="h-8 w-8 text-primary" />
-          <span className="text-lg font-semibold">Cyber Junk1e</span>
-        </Link>
+          <X className="h-4 w-4" />
+          <span className="sr-only">Close sidebar</span>
+        </Button>
+
+        {/* Logo - explicitly using forward slash for root */}
+        <div className="flex items-center justify-between">
+          <Link
+            href="/"
+            className={cn(
+              'flex items-center gap-2 text-foreground',
+              pathname === '/' && 'text-primary',
+            )}
+          >
+            <Code className="h-6 w-6 text-primary" />
+            <span className="text-base font-semibold">The Source Build</span>
+          </Link>
+          <ThemeToggle />
+        </div>
 
         <Separator className="my-4" />
 
@@ -51,14 +74,20 @@ export function Sidebar() {
                 key={item.href}
                 variant={isActive ? 'default' : 'ghost'}
                 className={cn(
-                  'justify-start gap-2',
+                  'justify-start gap-2 h-10 px-3',
                   isActive && 'bg-primary text-primary-foreground',
+                  'hover:bg-primary/90 hover:text-primary-foreground'
                 )}
+                onClick={() => {
+                  if (onClose && window.innerWidth < 1024) {
+                    onClose();
+                  }
+                }}
                 asChild
               >
                 <Link href={item.href}>
                   <item.icon className="h-4 w-4" />
-                  {item.name}
+                  <span className="text-sm">{item.name}</span>
                 </Link>
               </Button>
             );
@@ -69,13 +98,16 @@ export function Sidebar() {
         <div className="mt-auto pt-4">
           <Separator className="mb-4" />
           <div className="flex items-center justify-between">
-            <Button variant="ghost" className="justify-start gap-2" asChild>
+            <Button 
+              variant="ghost" 
+              className="justify-start gap-2 h-10 px-3 w-full hover:bg-primary/90 hover:text-primary-foreground" 
+              asChild
+            >
               <Link href="/profile">
                 <Beer className="h-4 w-4" />
-                Add something
+                <span className="text-sm">Add something</span>
               </Link>
             </Button>
-            <ThemeToggle />
           </div>
         </div>
       </div>
