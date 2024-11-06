@@ -50,6 +50,13 @@
   }
 }
 
+@font-face {
+  font-family: 'HackNerdFontMono-Regular';
+  src: url('../../public/fonts/HackNerdFontMono-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 @layer base {
   * {
     @apply border-border;
