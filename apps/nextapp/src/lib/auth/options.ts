@@ -1,3 +1,4 @@
+// apps/nextapp/src/lib/auth/options.ts
 import { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import dbConnect from '../mongodb';

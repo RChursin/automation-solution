@@ -1,4 +1,4 @@
-// --- Login Route ---
+// apps/nextapp/src/app/api/auth/login/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '../../../../lib/mongodb';
 import { User } from '../../../../lib/user-schema'; // Assuming you have a user schema

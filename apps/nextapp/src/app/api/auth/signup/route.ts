@@ -1,3 +1,4 @@
+// apps/nextapp/src/app/api/auth/signup/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '../../../../lib/mongodb';
 import { User } from '../../../../lib/user-schema'; // Assuming you have a user schema

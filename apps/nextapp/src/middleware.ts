@@ -1,16 +1,24 @@
-import { NextRequest, NextResponse } from 'next/server';
+// apps/nextapp/src/middleware.ts
+import { withAuth } from 'next-auth/middleware';
+import { NextResponse } from 'next/server';
 
-// Use simple cookie checking for middleware
-export async function middleware(request: NextRequest) {
-  const token = request.cookies.get('next-auth.session-token');
-
-  if (!token) {
-    return NextResponse.redirect(new URL('/auth/login', request.url));
+export default withAuth(
+  // Remove unused req parameter
+  function middleware() {
+    return NextResponse.next();
+  },
+  {
+    callbacks: {
+      authorized: ({ token }) => !!token,
+    },
+    pages: {
+      signIn: '/auth/login',
+    },
   }
-
-  return NextResponse.next();
-}
+);
 
 export const config = {
-  matcher: ['/api/notes/:path*', '/profile'], // Protect these paths
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|auth/login|auth/signup).*)',
+  ],
 };

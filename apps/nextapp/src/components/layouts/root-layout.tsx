@@ -1,3 +1,4 @@
+// apps/nextapp/src/components/layouts/root-layout.tsx
 'use client';
 
 import { useState, useEffect } from 'react';

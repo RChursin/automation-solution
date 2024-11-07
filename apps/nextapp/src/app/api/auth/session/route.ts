@@ -1,3 +1,4 @@
+// apps/nextapp/src/app/api/auth/session/route.ts
 import { NextResponse } from 'next/server';
 import dbConnect from '../../../../lib/mongodb';
 import { getSession } from '../../../../lib/session'; // Import your updated session utility
