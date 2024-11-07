@@ -1,10 +1,10 @@
-import NextAuth from 'next-auth';
+import { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import dbConnect from '../mongodb';
-import { User } from '../user-schema';
+import { User } from '../user-schema'; // Your user model
 import bcrypt from 'bcrypt';
 
-export const authOptions = {
+export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -13,10 +13,12 @@ export const authOptions = {
         password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentials) => {
-        await dbConnect();
-        const user = await User.findOne({ username: credentials?.username });
+        if (!credentials) return null;
 
-        if (user && credentials) {
+        await dbConnect();
+        const user = await User.findOne({ username: credentials.username });
+
+        if (user) {
           const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
           if (isPasswordValid) {
             return {
@@ -39,12 +41,16 @@ export const authOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.username = user.username;
       }
       return token;
     },
     async session({ session, token }) {
       if (token) {
-        session.user = { id: token.id, username: token.username };
+        session.user = {
+          id: token.id,
+          username: token.username,
+        };
       }
       return session;
     },

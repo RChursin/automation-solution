@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui
 import { Input } from '../../../components/ui/input';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import Link from 'next/link'; // Import Link to create navigation
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -30,7 +31,8 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-background items-center justify-center px-4">
+    
+    <div className="flex flex-col items-center justify-center min-h-screen">
       <header className="mb-8">
         <h2 className="text-4xl font-bold text-foreground">Login Page</h2>
       </header>
@@ -59,6 +61,13 @@ export default function Login() {
           <Button variant="outline" className="w-full text-lg py-2" onClick={handleLogin}>
             Login
           </Button>
+          <div className="text-center mt-4">
+            <Link href="/auth/signup">
+              <Button variant="link" className="text-sm text-primary">
+                Create an Account
+              </Button>
+            </Link>
+          </div>
         </CardContent>
       </Card>
 

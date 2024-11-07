@@ -33,7 +33,7 @@ export default function Signup() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-background items-center justify-center px-4">
+    <div className="flex flex-col items-center justify-center min-h-screen">
       <header className="mb-8">
         <h2 className="text-4xl font-bold text-foreground">Signup Page</h2>
       </header>

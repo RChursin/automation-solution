@@ -1,13 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import dbConnect from '../../../../lib/mongodb';
-import { getSession } from '../../../../lib/session'; // Import a session utility if using a library like NextAuth.js
+import { getSession } from '../../../../lib/session'; // Import your updated session utility
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     await dbConnect();
 
-    // Simulate getting the session for the currently logged-in user
-    const session = await getSession(request);
+    // Get the session directly without passing `request`
+    const session = await getSession();
 
     if (session && session.user) {
       return NextResponse.json({

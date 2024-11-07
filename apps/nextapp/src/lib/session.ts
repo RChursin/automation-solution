@@ -1,7 +1,7 @@
-import { getServerSession } from 'next-auth'; // If using NextAuth.js
-import { authOptions } from '../lib/auth/options'; // Adjust path as necessary
+import { getServerSession } from 'next-auth/next';
+import authOptions from '../lib/auth/options'; // Ensure this path points to your `authOptions`
 
-export async function getSession(request: Request) {
+export async function getSession() {
   const session = await getServerSession(authOptions);
   return session;
 }

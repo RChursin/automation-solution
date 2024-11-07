@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSession } from './lib/session';
 
+// Use simple cookie checking for middleware
 export async function middleware(request: NextRequest) {
-  const session = await getSession(request);
+  const token = request.cookies.get('next-auth.session-token');
 
-  if (!session) {
+  if (!token) {
     return NextResponse.redirect(new URL('/auth/login', request.url));
   }
 
