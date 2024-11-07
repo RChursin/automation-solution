@@ -1,13 +1,15 @@
-'use client';
+"use client";
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Beer, Code, FolderKanban, BookOpen, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Home, Beer, Code, FolderKanban, BookOpen, X, StickyNote } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Button } from '../../components/ui/button';
 import { Card } from '../../components/ui/card';
 import { Separator } from '../../components/ui/separator';
 import { ThemeToggle } from '../../components/themes/theme-toggle';
+import axios from 'axios';
 
 interface NavItem {
   name: string;
@@ -28,6 +30,27 @@ const navigation: NavItem[] = [
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [notes, setNotes] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Check if the user is logged in
+    const fetchUserSession = async () => {
+      try {
+        const response = await axios.get('/api/auth/session');
+        if (response.data.isLoggedIn) {
+          setIsLoggedIn(true);
+          // Fetch user-specific notes
+          const notesResponse = await axios.get('/api/notes');
+          setNotes(notesResponse.data.notes);
+        }
+      } catch (error) {
+        console.error('Error fetching user session or notes:', error);
+      }
+    };
+
+    fetchUserSession();
+  }, []);
 
   return (
     <Card className={cn(
@@ -92,6 +115,23 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               </Button>
             );
           })}
+
+          {/* Show notes if the user is logged in */}
+          {isLoggedIn && (
+            <div className="mt-4">
+              <h3 className="text-lg font-semibold text-foreground">Your Notes</h3>
+              <ul className="mt-2 space-y-2">
+                {notes.map((note, index) => (
+                  <li key={index} className="text-sm text-muted-foreground">
+                    <Link href={`/notes/${note}`} className="flex items-center gap-2 hover:text-primary">
+                      <StickyNote className="h-4 w-4" />
+                      {note}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </nav>
 
         {/* Footer */}
