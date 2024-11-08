@@ -1,3 +1,4 @@
+// apps/nextapp/src/lib/user-schema.ts
 import mongoose, { Schema } from 'mongoose';
 import { IUser } from '../types/user';
 

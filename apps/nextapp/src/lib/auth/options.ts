@@ -4,28 +4,6 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import dbConnect from '../mongodb';
 import { User } from '../user-schema';
 import bcrypt from 'bcrypt';
-import { IUser } from '../../types/user';
-
-// Define the structure of the session user
-declare module 'next-auth' {
-  interface Session {
-    user: {
-      id: string;
-      username: string;
-    }
-  }
-  interface User {
-    id: string;
-    username: string;
-  }
-}
-
-declare module 'next-auth/jwt' {
-  interface JWT {
-    id: string;
-    username: string;
-  }
-}
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -54,7 +32,7 @@ export const authOptions: AuthOptions = {
           
           const user = await User.findOne({ 
             username: credentials.username 
-          }).select('+password').lean() as (IUser & { _id: string } | null);
+          }).select('+password');
 
           if (!user) {
             throw new Error('Invalid username or password');
@@ -69,6 +47,7 @@ export const authOptions: AuthOptions = {
             throw new Error('Invalid username or password');
           }
 
+          // Make sure to return the correct user ID
           return {
             id: user._id.toString(),
             username: user.username,
@@ -80,11 +59,6 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
-  pages: {
-    signIn: '/login',
-    error: '/error',
-    signOut: '/login',
-  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -94,9 +68,11 @@ export const authOptions: AuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      if (token && session.user) {
-        session.user.id = token.id;
-        session.user.username = token.username;
+      if (token) {
+        session.user = {
+          id: token.id,
+          username: token.username,
+        };
       }
       return session;
     },
@@ -105,8 +81,13 @@ export const authOptions: AuthOptions = {
     strategy: 'jwt',
     maxAge: 24 * 60 * 60, // 24 hours
   },
+  pages: {
+    signIn: '/login',
+    error: '/error',
+    signOut: '/login',
+  },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: process.env.NODE_ENV === 'development',
+  debug: true, // Enable debug mode to see what's happening
 };
 
 export default authOptions;
