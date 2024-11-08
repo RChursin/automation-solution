@@ -1,7 +1,8 @@
+// apps/nextapp/src/app/(protected)/home/page.tsx
 import { Metadata } from 'next';
-import { Button } from '../../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
-import { Separator } from '../../components/ui/separator';
+import { Button } from '../../../components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
+import { Separator } from '../../../components/ui/separator';
 
 export const metadata: Metadata = {
   title: 'Home | Automation Solutions',
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex flex-col bg-background">
       <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-6">
         <div className="container">
           <h2 className="text-2xl font-semibold text-foreground">Home Page Header</h2>

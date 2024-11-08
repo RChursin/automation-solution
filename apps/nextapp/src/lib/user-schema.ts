@@ -1,29 +1,21 @@
-import { Schema, models, model } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+import { IUser } from '../types/user';
 
-export interface IUser {
-  _id: string;
-  username: string;
-  password: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-const userSchema = new Schema<IUser>(
+const UserSchema = new Schema<IUser>(
   {
     username: {
       type: String,
-      required: true,
+      required: [true, 'Please provide a username'],
       unique: true,
-      maxlength: [30, 'Username cannot be more than 30 characters'],
     },
     password: {
       type: String,
-      required: true,
+      required: [true, 'Please provide a password'],
     },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-export const User = models.User || model('User', userSchema);
+export const User = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);

@@ -1,25 +1,22 @@
 // apps/nextapp/src/app/api/auth/session/route.ts
 import { NextResponse } from 'next/server';
-import dbConnect from '../../../../lib/mongodb';
-import { getSession } from '../../../../lib/session'; // Import your updated session utility
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../../../../lib/auth/options';
 
 export async function GET() {
   try {
-    await dbConnect();
+    const session = await getServerSession(authOptions);
 
-    // Get the session directly without passing `request`
-    const session = await getSession();
-
-    if (session && session.user) {
+    if (session) {
       return NextResponse.json({
         isLoggedIn: true,
         user: session.user,
-      }, { status: 200 });
-    } else {
-      return NextResponse.json({
-        isLoggedIn: false,
-      }, { status: 200 });
+      });
     }
+
+    return NextResponse.json({
+      isLoggedIn: false,
+    });
   } catch (error) {
     console.error('Session check error:', error);
     return NextResponse.json(

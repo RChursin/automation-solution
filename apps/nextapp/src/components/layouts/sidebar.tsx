@@ -1,15 +1,15 @@
+// apps/nextapp/src/components/layouts/sidebar.tsx
 "use client";
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { Home, Beer, Code, FolderKanban, BookOpen, X, StickyNote } from 'lucide-react';
+import { Home, Beer, Code, FolderKanban, BookOpen, X, StickyNote, LogOut } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Button } from '../../components/ui/button';
 import { Card } from '../../components/ui/card';
 import { Separator } from '../../components/ui/separator';
 import { ThemeToggle } from '../../components/themes/theme-toggle';
-import axios from 'axios';
+import { useSession, signOut } from 'next-auth/react';
 
 interface NavItem {
   name: string;
@@ -26,31 +26,23 @@ const navigation: NavItem[] = [
   { name: 'Home', href: '/home', icon: Home },
   { name: 'Projects', href: '/projects', icon: FolderKanban },
   { name: 'Blog', href: '/blog', icon: BookOpen },
+  { name: 'Notes', href: '/notes', icon: StickyNote },
 ];
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [notes, setNotes] = useState<string[]>([]);
+  const { data: session, status } = useSession();
 
-  useEffect(() => {
-    // Check if the user is logged in
-    const fetchUserSession = async () => {
-      try {
-        const response = await axios.get('/api/auth/session');
-        if (response.data.isLoggedIn) {
-          setIsLoggedIn(true);
-          // Fetch user-specific notes
-          const notesResponse = await axios.get('/api/notes');
-          setNotes(notesResponse.data.notes);
-        }
-      } catch (error) {
-        console.error('Error fetching user session or notes:', error);
-      }
-    };
-
-    fetchUserSession();
-  }, []);
+  const handleLogout = async () => {
+    try {
+      await signOut({ 
+        redirect: true, 
+        callbackUrl: '/login'
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   return (
     <Card className={cn(
@@ -87,6 +79,15 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         <Separator className="my-4" />
 
+        {/* User Info */}
+        {session?.user && (
+          <div className="mb-4">
+            <p className="text-sm text-muted-foreground">
+              Signed in as: {session.user.username}
+            </p>
+          </div>
+        )}
+
         {/* Navigation */}
         <nav className="flex flex-1 flex-col gap-2">
           {navigation.map(item => {
@@ -115,29 +116,12 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               </Button>
             );
           })}
-
-          {/* Show notes if the user is logged in */}
-          {isLoggedIn && (
-            <div className="mt-4">
-              <h3 className="text-lg font-semibold text-foreground">Your Notes</h3>
-              <ul className="mt-2 space-y-2">
-                {notes.map((note, index) => (
-                  <li key={index} className="text-sm text-muted-foreground">
-                    <Link href={`/notes/${note}`} className="flex items-center gap-2 hover:text-primary">
-                      <StickyNote className="h-4 w-4" />
-                      {note}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
         </nav>
 
         {/* Footer */}
         <div className="mt-auto pt-4">
           <Separator className="mb-4" />
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-2">
             <Button 
               variant="ghost" 
               className="justify-start gap-2 h-10 px-3 w-full hover:bg-primary/90 hover:text-primary-foreground" 
@@ -148,6 +132,17 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 <span className="text-sm">Add something</span>
               </Link>
             </Button>
+
+            {status === 'authenticated' && (
+              <Button
+                variant="ghost"
+                className="justify-start gap-2 h-10 px-3 w-full hover:bg-destructive/90 hover:text-destructive-foreground"
+                onClick={handleLogout}
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="text-sm">Sign out</span>
+              </Button>
+            )}
           </div>
         </div>
       </div>

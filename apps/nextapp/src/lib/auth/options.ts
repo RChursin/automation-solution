@@ -2,41 +2,88 @@
 import { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import dbConnect from '../mongodb';
-import { User } from '../user-schema'; // Your user model
+import { User } from '../user-schema';
 import bcrypt from 'bcrypt';
+import { IUser } from '../../types/user';
+
+// Define the structure of the session user
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      id: string;
+      username: string;
+    }
+  }
+  interface User {
+    id: string;
+    username: string;
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    id: string;
+    username: string;
+  }
+}
 
 export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
+      id: 'credentials',
       name: 'Credentials',
       credentials: {
-        username: { label: 'Username', type: 'text' },
-        password: { label: 'Password', type: 'password' },
+        username: { 
+          label: 'Username', 
+          type: 'text',
+          placeholder: 'Enter your username'
+        },
+        password: { 
+          label: 'Password', 
+          type: 'password',
+          placeholder: 'Enter your password'
+        },
       },
-      authorize: async (credentials) => {
-        if (!credentials) return null;
-
-        await dbConnect();
-        const user = await User.findOne({ username: credentials.username });
-
-        if (user) {
-          const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
-          if (isPasswordValid) {
-            return {
-              id: user._id.toString(),
-              username: user.username,
-            };
-          }
+      async authorize(credentials) {
+        if (!credentials?.username || !credentials?.password) {
+          throw new Error('Please provide both username and password');
         }
-        return null;
+
+        try {
+          await dbConnect();
+          
+          const user = await User.findOne({ 
+            username: credentials.username 
+          }).select('+password').lean() as (IUser & { _id: string } | null);
+
+          if (!user) {
+            throw new Error('Invalid username or password');
+          }
+
+          const isValid = await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
+          
+          if (!isValid) {
+            throw new Error('Invalid username or password');
+          }
+
+          return {
+            id: user._id.toString(),
+            username: user.username,
+          };
+        } catch (error) {
+          console.error('Auth error:', error);
+          throw error;
+        }
       },
     }),
   ],
-  session: {
-    strategy: 'jwt',
-  },
-  jwt: {
-    secret: process.env.JWT_SECRET || 'default_secret',
+  pages: {
+    signIn: '/login',
+    error: '/error',
+    signOut: '/login',
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -47,15 +94,19 @@ export const authOptions: AuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      if (token) {
-        session.user = {
-          id: token.id,
-          username: token.username,
-        };
+      if (token && session.user) {
+        session.user.id = token.id;
+        session.user.username = token.username;
       }
       return session;
     },
   },
+  session: {
+    strategy: 'jwt',
+    maxAge: 24 * 60 * 60, // 24 hours
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === 'development',
 };
 
 export default authOptions;

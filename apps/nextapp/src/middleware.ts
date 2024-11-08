@@ -1,24 +1,46 @@
-// apps/nextapp/src/middleware.ts
+// src/middleware.ts
 import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
 
 export default withAuth(
-  // Remove unused req parameter
-  function middleware() {
+  function middleware(req) {
+    const path = req.nextUrl.pathname;
+
+    // Redirect root to home for authenticated users
+    if (path === '/' && req.nextauth.token) {
+      return NextResponse.redirect(new URL('/home', req.url));
+    }
+
     return NextResponse.next();
   },
   {
     callbacks: {
-      authorized: ({ token }) => !!token,
+      authorized: ({ token, req }) => {
+        const path = req.nextUrl.pathname;
+        
+        // Allow public routes
+        if (
+          path.startsWith('/login') ||
+          path.startsWith('/signup') ||
+          path.startsWith('/error') ||
+          path.startsWith('/api/auth')
+        ) {
+          return true;
+        }
+        
+        // Protect other routes
+        return !!token;
+      },
     },
     pages: {
-      signIn: '/auth/login',
+      signIn: '/login',
+      error: '/error',
     },
   }
 );
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|auth/login|auth/signup).*)',
+    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };

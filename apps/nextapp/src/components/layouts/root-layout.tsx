@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 import { Sidebar } from '../layouts/sidebar';
 import { Menu } from 'lucide-react';
 import { Button } from '../ui/button';
+import { useSession } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 
 interface RootLayoutProps {
   children: React.ReactNode;
@@ -12,6 +14,9 @@ interface RootLayoutProps {
 
 export function RootLayout({ children }: RootLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const { status } = useSession();
+  const pathname = usePathname();
+  const isAuthPage = pathname?.startsWith('/auth/');
 
   // Close sidebar when screen size changes to desktop
   useEffect(() => {
@@ -24,6 +29,11 @@ export function RootLayout({ children }: RootLayoutProps) {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Don't show sidebar on auth pages or when not authenticated
+  if (isAuthPage || status !== 'authenticated') {
+    return <>{children}</>;
+  }
 
   return (
     <div className="flex min-h-screen bg-background">
