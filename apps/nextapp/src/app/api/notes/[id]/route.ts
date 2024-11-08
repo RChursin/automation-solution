@@ -49,7 +49,7 @@ export async function DELETE(
 
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -61,7 +61,7 @@ export async function GET(
       );
     }
 
-    const { id: noteId } = context.params;
+    const { id: noteId } = await context.params;
     await dbConnect();
 
     const note = await Note.findOne({
@@ -88,7 +88,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -100,7 +100,7 @@ export async function PUT(
       );
     }
 
-    const { id: noteId } = context.params;
+    const { id: noteId } = await context.params;
     const data = await request.json();
     await dbConnect();
 
