@@ -11,54 +11,48 @@ export const authOptions: AuthOptions = {
       id: 'credentials',
       name: 'Credentials',
       credentials: {
-        username: { 
-          label: 'Username', 
-          type: 'text',
-          placeholder: 'Enter your username'
-        },
-        password: { 
-          label: 'Password', 
-          type: 'password',
-          placeholder: 'Enter your password'
-        },
+        username: { label: 'Username', type: 'text' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         if (!credentials?.username || !credentials?.password) {
-          throw new Error('Please provide both username and password');
+          return null;
         }
 
         try {
           await dbConnect();
-          
-          const user = await User.findOne({ 
-            username: credentials.username 
-          }).select('+password');
+          const user = await User.findOne({ username: credentials.username });
 
           if (!user) {
-            throw new Error('Invalid username or password');
+            return null;
           }
 
-          const isValid = await bcrypt.compare(
-            credentials.password,
-            user.password
-          );
-          
+          const isValid = await bcrypt.compare(credentials.password, user.password);
           if (!isValid) {
-            throw new Error('Invalid username or password');
+            return null;
           }
 
-          // Make sure to return the correct user ID
           return {
             id: user._id.toString(),
             username: user.username,
           };
         } catch (error) {
           console.error('Auth error:', error);
-          throw error;
+          return null;
         }
       },
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  pages: {
+    signIn: '/login',
+    signOut: '/login',
+    error: '/error',
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -68,26 +62,25 @@ export const authOptions: AuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      if (token) {
-        session.user = {
-          id: token.id,
-          username: token.username,
-        };
+      if (token && session.user) {
+        session.user.id = token.id;
+        session.user.username = token.username;
       }
       return session;
     },
   },
-  session: {
-    strategy: 'jwt',
-    maxAge: 24 * 60 * 60, // 24 hours
+  cookies: {
+    sessionToken: {
+      name: `${process.env.NODE_ENV === 'production' ? '__Secure-' : ''}next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
   },
-  pages: {
-    signIn: '/login',
-    error: '/error',
-    signOut: '/login',
-  },
-  secret: process.env.NEXTAUTH_SECRET,
-  debug: true, // Enable debug mode to see what's happening
+  debug: process.env.NODE_ENV !== 'production',
 };
 
 export default authOptions;

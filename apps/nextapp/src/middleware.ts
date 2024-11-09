@@ -5,6 +5,9 @@ import { NextResponse } from 'next/server';
 export default withAuth(
   function middleware(req) {
     const path = req.nextUrl.pathname;
+    // Log current path and authentication status
+    console.log(`Accessing path: ${req.nextUrl.pathname}`);
+    console.log('Authentication status:', !!req.nextauth.token);
 
     // Redirect root to home for authenticated users
     if (path === '/' && req.nextauth.token) {
@@ -17,6 +20,7 @@ export default withAuth(
     callbacks: {
       authorized: ({ token, req }) => {
         const path = req.nextUrl.pathname;
+        console.log('Checking auth for path:', path, 'token:', !!token);
         
         // Allow public routes
         if (
