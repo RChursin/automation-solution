@@ -3,14 +3,7 @@ import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
 
 export default withAuth(
-  function middleware(req) {
-    const path = req.nextUrl.pathname;
-
-    // Redirect root to home for authenticated users
-    if (path === '/' && req.nextauth.token) {
-      return NextResponse.redirect(new URL('/home', req.url));
-    }
-
+  function middleware() {
     return NextResponse.next();
   },
   {
@@ -18,23 +11,17 @@ export default withAuth(
       authorized: ({ token, req }) => {
         const path = req.nextUrl.pathname;
         
-        // Allow public routes
-        if (
-          path.startsWith('/login') ||
-          path.startsWith('/signup') ||
-          path.startsWith('/error') ||
-          path.startsWith('/api/auth')
-        ) {
+        // Public routes
+        if (path === '/' || 
+            path === '/login' || 
+            path === '/signup' || 
+            path.startsWith('/api/auth')) {
           return true;
         }
         
-        // Protect other routes
+        // Protected routes require token
         return !!token;
       },
-    },
-    pages: {
-      signIn: '/login',
-      error: '/error',
     },
   }
 );

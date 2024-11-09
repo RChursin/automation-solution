@@ -11,54 +11,44 @@ export const authOptions: AuthOptions = {
       id: 'credentials',
       name: 'Credentials',
       credentials: {
-        username: { 
-          label: 'Username', 
-          type: 'text',
-          placeholder: 'Enter your username'
-        },
-        password: { 
-          label: 'Password', 
-          type: 'password',
-          placeholder: 'Enter your password'
-        },
+        username: { label: 'Username', type: 'text' },
+        password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
         if (!credentials?.username || !credentials?.password) {
-          throw new Error('Please provide both username and password');
+          throw new Error('Missing credentials');
         }
 
-        try {
-          await dbConnect();
-          
-          const user = await User.findOne({ 
-            username: credentials.username 
-          }).select('+password');
+        await dbConnect();
+        
+        const user = await User.findOne({ 
+          username: credentials.username 
+        });
 
-          if (!user) {
-            throw new Error('Invalid username or password');
-          }
-
-          const isValid = await bcrypt.compare(
-            credentials.password,
-            user.password
-          );
-          
-          if (!isValid) {
-            throw new Error('Invalid username or password');
-          }
-
-          // Make sure to return the correct user ID
-          return {
-            id: user._id.toString(),
-            username: user.username,
-          };
-        } catch (error) {
-          console.error('Auth error here:', error);
-          throw error;
+        if (!user) {
+          return null;
         }
+
+        const isValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+        
+        if (!isValid) {
+          return null;
+        }
+
+        return {
+          id: user._id.toString(),
+          username: user.username,
+        };
       },
     }),
   ],
+  pages: {
+    signIn: '/login',
+    error: '/error',
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
@@ -68,11 +58,9 @@ export const authOptions: AuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      if (token) {
-        session.user = {
-          id: token.id,
-          username: token.username,
-        };
+      if (token && session.user) {
+        session.user.id = token.id;
+        session.user.username = token.username as string;
       }
       return session;
     },
@@ -81,13 +69,7 @@ export const authOptions: AuthOptions = {
     strategy: 'jwt',
     maxAge: 24 * 60 * 60, // 24 hours
   },
-  pages: {
-    signIn: '/login',
-    error: '/error',
-    signOut: '/login',
-  },
   secret: process.env.NEXTAUTH_SECRET,
-  debug: true, // Enable debug mode to see what's happening
 };
 
 export default authOptions;
