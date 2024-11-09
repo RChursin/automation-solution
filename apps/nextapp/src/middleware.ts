@@ -7,11 +7,24 @@ export default withAuth(
     const path = req.nextUrl.pathname;
     const isAuth = !!req.nextauth.token;
 
-    // Handle public routes
+    // Handle www to non-www redirect
+    if (req.nextUrl.hostname === 'www.thesource.build') {
+      const newUrl = new URL(req.url);
+      newUrl.hostname = 'thesource.build';
+      return NextResponse.redirect(newUrl);
+    }
+
+    // Handle root path
     if (path === '/') {
-      return isAuth 
-        ? NextResponse.redirect(new URL('/home', req.url))
-        : NextResponse.redirect(new URL('/login', req.url));
+      if (isAuth) {
+        return NextResponse.redirect(new URL('/home', req.url));
+      }
+      return NextResponse.redirect(new URL('/login', req.url));
+    }
+
+    // Handle auth paths when already authenticated
+    if (isAuth && (path === '/login' || path === '/signup')) {
+      return NextResponse.redirect(new URL('/home', req.url));
     }
 
     return NextResponse.next();
@@ -34,14 +47,18 @@ export default withAuth(
         return !!token;
       },
     },
+    pages: {
+      signIn: '/login',
+    },
   }
 );
 
-// Protect all routes except public ones
 export const config = {
   matcher: [
     '/',
     '/home',
+    '/login',
+    '/signup',
     '/projects/:path*',
     '/blog/:path*',
     '/notes/:path*',

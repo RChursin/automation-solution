@@ -1,9 +1,28 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable strict mode in production
   reactStrictMode: true,
   
-  // Customize headers for security
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/home',
+        permanent: true,
+      },
+    ];
+  },
+
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/api/auth/:path*',
+          destination: '/api/auth/:path*',
+        },
+      ],
+    };
+  },
+
   async headers() {
     return [
       {
@@ -21,21 +40,7 @@ const nextConfig = {
             key: 'X-Content-Type-Options',
             value: 'nosniff'
           },
-          {
-            key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin'
-          },
         ],
-      },
-    ];
-  },
-
-  // Add rewrites for auth endpoints if needed
-  async rewrites() {
-    return [
-      {
-        source: '/api/auth/:path*',
-        destination: '/api/auth/:path*',
       },
     ];
   },
