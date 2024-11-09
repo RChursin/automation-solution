@@ -1,4 +1,5 @@
 // src/app/(protected)/layout.tsx
+// app/(protected)/layout.tsx (Protected layout)
 import { RootLayout } from '../../components/layouts/root-layout';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../lib/auth/options';
@@ -12,7 +13,7 @@ export default async function ProtectedLayout({
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    redirect('/auth/login');
+    redirect('/login');
   }
 
   return <RootLayout>{children}</RootLayout>;

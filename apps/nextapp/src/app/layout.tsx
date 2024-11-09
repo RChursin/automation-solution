@@ -1,5 +1,6 @@
 // apps/nextapp/src/app/layout.tsx
-import { monoid } from '../../src/app/fonts';
+// app/layout.tsx (Root layout)
+import { monoid } from '../app/fonts';
 import { AuthProvider } from '../components/auth-provider';
 import { ThemeProvider } from '../components/themes/theme-provider';
 import "./globals.css";

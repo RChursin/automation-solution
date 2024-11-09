@@ -7,14 +7,11 @@ export default withAuth(
     const path = req.nextUrl.pathname;
     const isAuth = !!req.nextauth.token;
 
-    // Redirect from root to /home if authenticated
-    if (path === '/' && isAuth) {
-      return NextResponse.redirect(new URL('/home', req.url));
-    }
-
-    // Redirect to login if not authenticated and trying to access protected route
-    if (!isAuth && path.startsWith('/home')) {
-      return NextResponse.redirect(new URL('/login', req.url));
+    // Handle public routes
+    if (path === '/') {
+      return isAuth 
+        ? NextResponse.redirect(new URL('/home', req.url))
+        : NextResponse.redirect(new URL('/login', req.url));
     }
 
     return NextResponse.next();
@@ -24,22 +21,31 @@ export default withAuth(
       authorized: ({ req, token }) => {
         const path = req.nextUrl.pathname;
         
-        // Always allow auth-related paths
-        if (path.startsWith('/api/auth') || path === '/login' || path === '/signup') {
+        // Public routes
+        if (
+          path === '/login' ||
+          path === '/signup' ||
+          path.startsWith('/api/auth')
+        ) {
           return true;
         }
 
-        // Protect /home and other non-public paths
-        if (path.startsWith('/home')) {
-          return !!token;
-        }
-
-        return true;
+        // Protected routes require token
+        return !!token;
       },
     },
   }
 );
 
+// Protect all routes except public ones
 export const config = {
-  matcher: ['/', '/home/:path*', '/login', '/signup']
+  matcher: [
+    '/',
+    '/home',
+    '/projects/:path*',
+    '/blog/:path*',
+    '/notes/:path*',
+    '/profile/:path*',
+    '/api/:path*',
+  ]
 };
