@@ -53,7 +53,7 @@ export const authOptions: AuthOptions = {
             username: user.username,
           };
         } catch (error) {
-          console.error('Auth error:', error);
+          console.error('Auth error here:', error);
           throw error;
         }
       },
