@@ -1,4 +1,4 @@
-// apps/nextapp/src/lib/auth/options.ts
+// lib/auth/options.ts
 import { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import dbConnect from '../mongodb';
@@ -16,32 +16,34 @@ export const authOptions: AuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.username || !credentials?.password) {
-          throw new Error('Missing credentials');
+          throw new Error('Please provide both username and password');
         }
 
-        await dbConnect();
-        
-        const user = await User.findOne({ 
-          username: credentials.username 
-        });
+        try {
+          await dbConnect();
+          const user = await User.findOne({ username: credentials.username });
 
-        if (!user) {
-          return null;
+          if (!user) {
+            throw new Error('Invalid username or password');
+          }
+
+          const isValid = await bcrypt.compare(credentials.password, user.password);
+          
+          if (!isValid) {
+            throw new Error('Invalid username or password');
+          }
+
+          return {
+            id: user._id.toString(),
+            username: user.username,
+          };
+        } catch (error) {
+          console.error('Auth error:', error);
+          if (error instanceof Error) {
+            throw new Error(error.message || 'Authentication failed');
+          }
+          throw new Error('Authentication failed');
         }
-
-        const isValid = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
-        
-        if (!isValid) {
-          return null;
-        }
-
-        return {
-          id: user._id.toString(),
-          username: user.username,
-        };
       },
     }),
   ],
@@ -58,18 +60,34 @@ export const authOptions: AuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      if (token && session.user) {
-        session.user.id = token.id;
+      if (session.user) {
+        session.user.id = token.id as string;
         session.user.username = token.username as string;
       }
       return session;
-    },
+    }
   },
   session: {
     strategy: 'jwt',
     maxAge: 24 * 60 * 60, // 24 hours
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  cookies: {
+    sessionToken: {
+      name: process.env.NODE_ENV === 'production' 
+        ? '__Secure-next-auth.session-token'
+        : 'next-auth.session-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        domain: process.env.NODE_ENV === 'production' 
+          ? '.thesource.build'  // Note the leading dot for subdomain support
+          : 'localhost'
+      }
+    }
+  },
+  debug: process.env.NODE_ENV === 'development',
 };
 
 export default authOptions;
