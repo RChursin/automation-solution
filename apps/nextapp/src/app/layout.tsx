@@ -1,7 +1,7 @@
 // apps/nextapp/src/app/layout.tsx
 // app/layout.tsx (Root layout)
 import { monoid } from '../app/fonts';
-import { AuthProvider } from '../components/auth-provider';
+import { Providers } from '../components/providers';
 import { ThemeProvider } from '../components/themes/theme-provider';
 import "./globals.css";
 
@@ -13,7 +13,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={monoid.variable}>
       <body suppressHydrationWarning>
-        <AuthProvider>
+        <Providers>
           <ThemeProvider 
             attribute="class" 
             defaultTheme="dark" 
@@ -22,7 +22,7 @@ export default function RootLayout({
           >
             {children}
           </ThemeProvider>
-        </AuthProvider>
+        </Providers>
       </body>
     </html>
   );

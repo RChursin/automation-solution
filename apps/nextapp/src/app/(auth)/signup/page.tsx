@@ -1,3 +1,4 @@
+// apps/nextapp/src/app/(auth)/signup/page.tsx
 'use client';
 
 import { Button } from '../../../components/ui/button';
@@ -66,7 +67,11 @@ export default function Signup() {
       <CardContent>
         <form onSubmit={handleSignup} className="space-y-4">
           {error && (
-            <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">
+            <div 
+              role="alert" 
+              aria-live="polite" 
+              className="p-3 text-sm text-destructive bg-destructive/10 rounded-md"
+            >
               {error}
             </div>
           )}

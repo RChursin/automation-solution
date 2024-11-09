@@ -57,7 +57,11 @@ export default function Login() {
       <CardContent>
         <form onSubmit={handleLogin} className="space-y-4">
           {error && (
-            <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">
+            <div 
+              role="alert" 
+              aria-live="polite" 
+              className="p-3 text-sm text-destructive bg-destructive/10 rounded-md"
+            >
               {error}
             </div>
           )}

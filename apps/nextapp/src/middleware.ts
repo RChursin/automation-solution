@@ -14,15 +14,17 @@ export default withAuth(
       return NextResponse.redirect(newUrl);
     }
 
-    // Handle root path
-    if (path === '/') {
-      if (isAuth) {
-        return NextResponse.redirect(new URL('/home', req.url));
-      }
-      return NextResponse.redirect(new URL('/login', req.url));
+    // Avoid redirection loop for authenticated users
+    if (path === '/' && isAuth) {
+      return NextResponse.redirect(new URL('/home', req.url));
     }
 
-    // Handle auth paths when already authenticated
+    // Redirect unauthenticated users trying to access protected routes
+    if (!isAuth && path !== '/login' && path !== '/signup' && !path.startsWith('/api/auth')) {
+      return NextResponse.redirect(new URL('/login?callbackUrl=' + encodeURIComponent(path), req.url));
+    }
+
+    // Handle auth paths for already authenticated users
     if (isAuth && (path === '/login' || path === '/signup')) {
       return NextResponse.redirect(new URL('/home', req.url));
     }
@@ -33,7 +35,7 @@ export default withAuth(
     callbacks: {
       authorized: ({ req, token }) => {
         const path = req.nextUrl.pathname;
-        
+
         // Public routes
         if (
           path === '/login' ||
