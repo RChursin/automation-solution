@@ -6,12 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui
 import { Input } from '../../../components/ui/input';
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Login() {
-  const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -19,30 +17,30 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (isLoading) return;
-    
     setIsLoading(true);
     setError('');
 
     try {
+      console.log('Attempting login for:', username);
+      
       const result = await signIn('credentials', {
         username,
         password,
         redirect: false,
-        callbackUrl: '/home'
       });
+
+      console.log('Login result:', result);
 
       if (result?.error) {
         setError(result.error);
+        setIsLoading(false);
       } else if (result?.ok) {
-        router.push('/home');
-        router.refresh();
+        // Use window.location for hard navigation
+        window.location.href = '/home';
       }
     } catch (err) {
+      console.error('Login error:', err);
       setError('An unexpected error occurred');
-      console.error(err);
-    } finally {
       setIsLoading(false);
     }
   };

@@ -5,13 +5,18 @@ import { NextResponse } from 'next/server';
 export default withAuth(
   function middleware(req) {
     const path = req.nextUrl.pathname;
-    // Log current path and authentication status
-    console.log(`Accessing path: ${req.nextUrl.pathname}`);
-    console.log('Authentication status:', !!req.nextauth.token);
-
-    // Redirect root to home for authenticated users
-    if (path === '/' && req.nextauth.token) {
-      return NextResponse.redirect(new URL('/home', req.url));
+    console.log(`Accessing path: ${path}`);
+    console.log('Auth status:', !!req.nextauth.token);
+    
+    // Handle root path
+    if (path === '/') {
+      const isAuthenticated = !!req.nextauth.token;
+      console.log('Root path, authenticated:', isAuthenticated);
+      
+      if (isAuthenticated) {
+        return NextResponse.redirect(new URL('/home', req.url));
+      }
+      return NextResponse.redirect(new URL('/login', req.url));
     }
 
     return NextResponse.next();
@@ -20,9 +25,9 @@ export default withAuth(
     callbacks: {
       authorized: ({ token, req }) => {
         const path = req.nextUrl.pathname;
-        console.log('Checking auth for path:', path, 'token:', !!token);
+        console.log('Auth check for path:', path, 'token:', !!token);
         
-        // Allow public routes
+        // Allow auth-related paths
         if (
           path.startsWith('/login') ||
           path.startsWith('/signup') ||
@@ -32,7 +37,7 @@ export default withAuth(
           return true;
         }
         
-        // Protect other routes
+        // All other paths require authentication
         return !!token;
       },
     },
