@@ -5,54 +5,41 @@ import { NextResponse } from 'next/server';
 export default withAuth(
   function middleware(req) {
     const path = req.nextUrl.pathname;
-    
-    // Handle root path redirect
-    if (path === '/') {
+    const isAuth = !!req.nextauth.token;
+
+    // Redirect from root to /home if authenticated
+    if (path === '/' && isAuth) {
       return NextResponse.redirect(new URL('/home', req.url));
     }
 
-    // Allow the request to proceed
+    // Redirect to login if not authenticated and trying to access protected route
+    if (!isAuth && path.startsWith('/home')) {
+      return NextResponse.redirect(new URL('/login', req.url));
+    }
+
     return NextResponse.next();
   },
   {
     callbacks: {
-      authorized: ({ token, req }) => {
+      authorized: ({ req, token }) => {
         const path = req.nextUrl.pathname;
         
-        // Public paths that don't require authentication
-        if (
-          path === '/' ||
-          path === '/login' ||
-          path === '/signup' ||
-          path.startsWith('/api/auth') ||
-          path.startsWith('/_next') ||
-          path.startsWith('/static') ||
-          path.includes('favicon')
-        ) {
+        // Always allow auth-related paths
+        if (path.startsWith('/api/auth') || path === '/login' || path === '/signup') {
           return true;
         }
-        
-        // Protected routes require token
-        return !!token;
+
+        // Protect /home and other non-public paths
+        if (path.startsWith('/home')) {
+          return !!token;
+        }
+
+        return true;
       },
-    },
-    pages: {
-      signIn: '/login',
-      error: '/error',
     },
   }
 );
 
-// Updated matcher configuration
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api/auth (auth API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    '/((?!api/auth|_next/static|_next/image|favicon.ico).*)',
-  ],
+  matcher: ['/', '/home/:path*', '/login', '/signup']
 };
