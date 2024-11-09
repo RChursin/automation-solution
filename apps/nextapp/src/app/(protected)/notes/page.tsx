@@ -1,10 +1,11 @@
+// apps/nextapp/src/app/notes/page.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
+import { Button } from "../../../components/ui/button";
+import { Input } from "../../../components/ui/input";
 import { Plus, Save, Trash2 } from 'lucide-react';
-import { cn } from '../../lib/utils';
+import { cn } from '../../../lib/utils';
 
 interface Note {
   _id?: string;

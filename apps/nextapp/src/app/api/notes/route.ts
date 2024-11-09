@@ -1,11 +1,28 @@
-import { NextResponse } from 'next/server';
+// apps/nextapp/src/app/api/notes/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../../../lib/auth/options';
 import dbConnect from '../../../lib/mongodb';
 import { Note } from '../../../lib/note-schema';
 
 export async function GET() {
   try {
+    const session = await getServerSession(authOptions);
+    console.log('Current session:', session); // Debug log
+    
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     await dbConnect();
-    const notes = await Note.find({}).sort({ updatedAt: -1 });
+    const notes = await Note.find({ userId: session.user.id })
+      .sort({ updatedAt: -1 })
+      .lean();
+
+    console.log('Found notes:', notes); // Debug log
     return NextResponse.json(notes);
   } catch (error) {
     console.error('GET Error:', error);
@@ -16,60 +33,36 @@ export async function GET() {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    console.log('Create note session:', session); // Debug log
+    
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     await dbConnect();
     const data = await request.json();
+    console.log('Creating note with data:', { ...data, userId: session.user.id }); // Debug log
 
     const noteData = {
+      userId: session.user.id,
       title: data.title || 'Untitled Note',
       content: data.content || '',
     };
 
     const note = await Note.create(noteData);
+    console.log('Created note:', note); // Debug log
+    
     return NextResponse.json(note, { status: 201 });
   } catch (error) {
     console.error('POST Error:', error);
     return NextResponse.json(
       { error: 'Failed to create note' },
-      { status: 500 }
-    );
-  }
-}
-
-export async function PUT(request: Request) {
-  try {
-    await dbConnect();
-    const data = await request.json();
-
-    if (!data._id) {
-      return NextResponse.json(
-        { error: 'Note ID is required' },
-        { status: 400 }
-      );
-    }
-
-    const note = await Note.findByIdAndUpdate(
-      data._id,
-      {
-        title: data.title || 'Untitled Note',
-        content: data.content || '',
-      },
-      { new: true, runValidators: true }
-    );
-
-    if (!note) {
-      return NextResponse.json(
-        { error: 'Note not found' },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json(note);
-  } catch (error) {
-    console.error('PUT Error:', error);
-    return NextResponse.json(
-      { error: 'Failed to update note' },
       { status: 500 }
     );
   }

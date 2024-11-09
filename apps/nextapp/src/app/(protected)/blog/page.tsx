@@ -1,7 +1,8 @@
+// apps/nextapp/src/app/blog/page.tsx
 import { Metadata } from 'next';
-import { Button } from '../../components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
-import { Separator } from '../../components/ui/separator';
+import { Button } from '../../../components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
+import { Separator } from '../../../components/ui/separator';
 import { BookOpen, Pencil, Tags, Bookmark } from 'lucide-react';
 
 export const metadata: Metadata = {
