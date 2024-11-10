@@ -1,7 +1,13 @@
 // apps/nextapp/src/lib/auth/server.ts
 import { getServerSession } from 'next-auth';
-import { authOptions } from './options';
+import { authOptions } from '../auth/options';
 
-export async function getSession() {
-  return await getServerSession(authOptions);
+export async function getCurrentUser() {
+  const session = await getServerSession(authOptions);
+  
+  if (!session?.user?.id) {
+    throw new Error('Unauthorized');
+  }
+  
+  return session.user;
 }

@@ -8,19 +8,37 @@ export async function POST(request: NextRequest) {
   try {
     await dbConnect();
     
-    const { username, password } = await request.json();
+    const { username, email, password } = await request.json();
 
     // Validate input
-    if (!username || !password) {
+    if (!username || !email || !password) {
       return NextResponse.json(
-        { error: 'Username and password are required' },
+        { error: 'Username, email, and password are required' },
+        { status: 400 }
+      );
+    }
+
+    // Validate email format
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { error: 'Please provide a valid email address' },
+        { status: 400 }
+      );
+    }
+
+    // Check if email already exists
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+      return NextResponse.json(
+        { error: 'Email already exists' },
         { status: 400 }
       );
     }
 
     // Check if username already exists
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) {
       return NextResponse.json(
         { error: 'Username already exists' },
         { status: 400 }
@@ -33,6 +51,7 @@ export async function POST(request: NextRequest) {
     // Create new user
     const user = await User.create({
       username,
+      email,
       password: hashedPassword,
     });
 
@@ -41,7 +60,8 @@ export async function POST(request: NextRequest) {
         success: true, 
         user: {
           id: user._id.toString(),
-          username: user.username
+          username: user.username,
+          email: user.email
         }
       }, 
       { status: 201 }

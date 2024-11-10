@@ -1,4 +1,4 @@
-// lib/auth/options.ts
+// apps/nextapp/src/lib/auth/options.ts
 import { AuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import dbConnect from '../mongodb';
@@ -11,38 +11,46 @@ export const authOptions: AuthOptions = {
       id: 'credentials',
       name: 'Credentials',
       credentials: {
-        username: { label: 'Username', type: 'text' },
+        email: { label: 'Email', type: 'email' },      // Only use email for login
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
-        if (!credentials?.username || !credentials?.password) {
-          throw new Error('Please provide both username and password');
+        // Check if credentials are provided
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error('Please provide both email and password');
         }
 
         try {
           await dbConnect();
-          const user = await User.findOne({ username: credentials.username });
+          
+          // Find user by email only
+          const user = await User.findOne({ email: credentials.email });
 
+          // If no user found with this email
           if (!user) {
-            throw new Error('Invalid username or password');
+            throw new Error('No account found with this email');
           }
 
+          // Verify password
           const isValid = await bcrypt.compare(credentials.password, user.password);
           
           if (!isValid) {
-            throw new Error('Invalid username or password');
+            throw new Error('Invalid password');
           }
 
+          // Return user object with required fields
           return {
             id: user._id.toString(),
-            username: user.username,
+            email: user.email,
+            username: user.username, // We still include username as it's part of the user model
           };
         } catch (error) {
           console.error('Auth error:', error);
-          if (error instanceof Error) {
-            throw new Error(error.message || 'Authentication failed');
-          }
-          throw new Error('Authentication failed');
+          // For security, use generic error message in production
+          const errorMessage = process.env.NODE_ENV === 'development' 
+            ? (error as Error).message 
+            : 'Invalid email or password';
+          throw new Error(errorMessage);
         }
       },
     }),
@@ -53,15 +61,19 @@ export const authOptions: AuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
+      // Initial sign in
       if (user) {
         token.id = user.id;
+        token.email = user.email;
         token.username = user.username;
       }
       return token;
     },
     async session({ session, token }) {
+      // Send properties to the client
       if (session.user) {
         session.user.id = token.id as string;
+        session.user.email = token.email as string;
         session.user.username = token.username as string;
       }
       return session;

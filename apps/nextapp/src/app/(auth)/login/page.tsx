@@ -12,7 +12,7 @@ import { Loader2 } from 'lucide-react';
 
 export default function Login() {
   const router = useRouter();
-  const [username, setUsername] = useState('');
+  const [email, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -27,8 +27,8 @@ export default function Login() {
 
     try {
       const result = await signIn('credentials', {
-        username,
-        password,
+        email: email,        // Use email instead of username
+        password: password,
         redirect: false,
         callbackUrl: '/home'
       });
@@ -68,8 +68,8 @@ export default function Login() {
           
           <div className="space-y-4">
             <Input
-              placeholder="Username"
-              value={username}
+              placeholder="Email"
+              value={email}
               onChange={(e) => setUsername(e.target.value)}
               required
               disabled={isLoading}
@@ -104,7 +104,7 @@ export default function Login() {
           </Button>
 
           <p className="text-sm text-center text-muted-foreground">
-            Dont have an account?{' '}
+            Don&apos;t have an account?{' '} {/* Use &apos; for single quotes to avoid syntax error */}
             <Link 
               href="/signup"
               className="text-primary hover:underline"

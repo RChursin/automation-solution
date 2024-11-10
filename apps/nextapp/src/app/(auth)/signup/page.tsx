@@ -13,6 +13,7 @@ import { Loader2 } from 'lucide-react';
 export default function Signup() {
   const router = useRouter();
   const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -41,7 +42,13 @@ export default function Signup() {
         throw new Error('Username must be at least 3 characters');
       }
 
-      const result = await signup(username, password);
+      // Validate email format
+      const emailRegex = /^\S+@\S+\.\S+$/;
+      if (!emailRegex.test(email)) {
+        throw new Error('Please provide a valid email address');
+      }
+
+      const result = await signup(username, email, password);
       
       if (result.success) {
         router.push('/home');
@@ -86,6 +93,16 @@ export default function Signup() {
               autoComplete="username"
               className="bg-background"
               minLength={3}
+            />
+            <Input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={isLoading}
+              autoComplete="email"
+              className="bg-background"
             />
             <Input
               type="password"

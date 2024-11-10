@@ -1,13 +1,13 @@
 // apps/nextapp/src/lib/auth/utils.ts
 import { signIn, signOut } from 'next-auth/react';
 
-export async function signup(username: string, password: string) {
+export async function signup(username: string, email: string, password: string) {
   try {
     // First, create the user
     const response = await fetch('/api/auth/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ username, email, password }),
     });
 
     const data = await response.json();
@@ -19,6 +19,7 @@ export async function signup(username: string, password: string) {
     // If signup successful, automatically sign in
     const result = await signIn('credentials', {
       username,
+      email,
       password,
       redirect: false,
     });
