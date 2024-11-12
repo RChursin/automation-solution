@@ -7,46 +7,43 @@ import bcrypt from 'bcrypt';
 
 export const authOptions: AuthOptions = {
   providers: [
+    // CredentialsProvider for custom email and password authentication
     CredentialsProvider({
-      id: 'credentials',
       name: 'Credentials',
       credentials: {
-        email: { label: 'Email', type: 'email' },      // Only use email for login
+        email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
-        // Check if credentials are provided
+        // Ensure both email and password are provided
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Please provide both email and password');
         }
 
         try {
+          // Connect to the database and look for the user by email
           await dbConnect();
-          
-          // Find user by email only
           const user = await User.findOne({ email: credentials.email });
 
-          // If no user found with this email
+          // If no user found, throw an error
           if (!user) {
             throw new Error('No account found with this email');
           }
 
-          // Verify password
+          // Compare provided password with the stored hashed password
           const isValid = await bcrypt.compare(credentials.password, user.password);
-          
           if (!isValid) {
             throw new Error('Invalid password');
           }
 
-          // Return user object with required fields
+          // Return user data if authentication is successful
           return {
             id: user._id.toString(),
             email: user.email,
-            username: user.username, // We still include username as it's part of the user model
+            username: user.username,
           };
         } catch (error) {
           console.error('Auth error:', error);
-          // For security, use generic error message in production
           const errorMessage = process.env.NODE_ENV === 'development' 
             ? (error as Error).message 
             : 'Invalid email or password';
@@ -56,21 +53,31 @@ export const authOptions: AuthOptions = {
     }),
   ],
   pages: {
+    // Custom page routes for sign-in and errors
     signIn: '/login',
     error: '/error',
   },
   callbacks: {
+    // JWT callback to store and update user data in the token
     async jwt({ token, user }) {
-      // Initial sign in
+      // Initial sign in: add user data to the token
       if (user) {
         token.id = user.id;
         token.email = user.email;
         token.username = user.username;
+      } else if (token.id) {
+        // Retrieve updated user data from the database if necessary
+        await dbConnect();
+        const updatedUser = await User.findById(token.id);
+        if (updatedUser) {
+          token.email = updatedUser.email;
+          token.username = updatedUser.username;
+        }
       }
       return token;
     },
+    // Session callback to make token data available in session
     async session({ session, token }) {
-      // Send properties to the client
       if (session.user) {
         session.user.id = token.id as string;
         session.user.email = token.email as string;
@@ -81,10 +88,11 @@ export const authOptions: AuthOptions = {
   },
   session: {
     strategy: 'jwt',
-    maxAge: 24 * 60 * 60, // 24 hours
+    maxAge: 24 * 60 * 60, // Session expiration time set to 24 hours
   },
   cookies: {
     sessionToken: {
+      // Cookie configuration for secure environments
       name: process.env.NODE_ENV === 'production' 
         ? '__Secure-next-auth.session-token'
         : 'next-auth.session-token',
@@ -94,12 +102,12 @@ export const authOptions: AuthOptions = {
         path: '/',
         secure: process.env.NODE_ENV === 'production',
         domain: process.env.NODE_ENV === 'production' 
-          ? '.thesource.build'  // Note the leading dot for subdomain support
+          ? '.thesource.build'
           : 'localhost'
       }
     }
   },
-  debug: process.env.NODE_ENV === 'development',
+  debug: process.env.NODE_ENV === 'development', // Enable debug logging in development
 };
 
 export default authOptions;

@@ -9,11 +9,14 @@ export default async function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
+  // Fetch the current user's session without caching the result
+  const session = await getServerSession({ ...authOptions, cache: 'no-store' });
 
+  // If no session is found, redirect the user to the login page
   if (!session) {
     redirect('/login');
   }
 
+  // Render the RootLayout component, passing in any nested content (children)
   return <RootLayout>{children}</RootLayout>;
 }
