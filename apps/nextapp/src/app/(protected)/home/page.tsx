@@ -1,6 +1,7 @@
 // apps/nextapp/src/app/(protected)/home/page.tsx
 import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
+import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { authOptions } from '../../../lib/auth/options';
 import { Button } from '../../../components/ui/button';
@@ -46,6 +47,9 @@ export default async function Home() {
               <p className="text-lg text-muted-foreground leading-relaxed">
                 This is your centralized automation hub. Access and manage all your automation
                 solutions from one place, with seamless integration and powerful controls.
+                <div className="flex justify-center mt-4">
+                  <Image className="ima" src="/astronaut.png" width={500} height={500} alt="Picture" />
+                </div>
               </p>
 
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
