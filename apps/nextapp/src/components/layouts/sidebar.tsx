@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { UserCog, Home, Beer, Code, FolderKanban, BookOpen, X, StickyNote, LogOut } from 'lucide-react';
+import { UserCog, Home, Code, FolderKanban, BookOpen, X, StickyNote, LogOut } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Button } from '../../components/ui/button';
 import { Card } from '../../components/ui/card';
