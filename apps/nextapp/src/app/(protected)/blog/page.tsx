@@ -2,7 +2,7 @@
 import { Metadata } from 'next';
 import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
-import { Separator } from '../../../components/ui/separator';
+// import { Separator } from '../../../components/ui/separator'; // If need to split the content
 import { BookOpen, Pencil, Tags, Bookmark } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -103,18 +103,20 @@ export default function BlogPage() {
               </div>
             </div>
           </Card>
-        </div>
-      </main>
-
-      <footer className="mt-auto border-t border-border bg-background p-6">
-        <div className="container">
-          <div className="flex flex-col gap-4">
-            <h2 className="text-lg font-semibold text-foreground">Blog Page Footer</h2>
-            <Separator />
-            <div className="flex justify-between text-sm text-muted-foreground">
+          <br />
+          <div className="flex justify-between text-sm text-muted-foreground">
               <p>Total Posts: 15</p>
               <p>Last Updated: Today</p>
             </div>
+        </div>
+      </main>
+
+     {/* Footer */}
+     <footer className="border-t border-border bg-background p-6">
+        <div className="container">
+          <div className="flex justify-between text-sm text-muted-foreground">
+            <p>© 2024 The Source Build</p>
+            <p>Built with ❤️ by Cyber_Junk1e</p>
           </div>
         </div>
       </footer>
