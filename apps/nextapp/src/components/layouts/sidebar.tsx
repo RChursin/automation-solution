@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Beer, Code, FolderKanban, BookOpen, X, StickyNote, LogOut } from 'lucide-react';
+import { UserCog, Home, Beer, Code, FolderKanban, BookOpen, X, StickyNote, LogOut } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { Button } from '../../components/ui/button';
 import { Card } from '../../components/ui/card';
@@ -128,8 +128,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               asChild
             >
               <Link href="/profile">
-                <Beer className="h-4 w-4" />
-                <span className="text-sm">Add something</span>
+                <UserCog className="h-4 w-4" />
+                <span className="text-sm">Profile Settings</span>
               </Link>
             </Button>
 
@@ -140,7 +140,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 onClick={handleLogout}
               >
                 <LogOut className="h-4 w-4" />
-                <span className="text-sm">Sign out</span>
+                <span className="text-sm">Sign Out</span>
               </Button>
             )}
           </div>

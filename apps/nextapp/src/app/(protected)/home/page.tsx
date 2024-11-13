@@ -6,11 +6,11 @@ import { redirect } from 'next/navigation';
 import { authOptions } from '../../../lib/auth/options';
 import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
-import { Separator } from '../../../components/ui/separator';
+// import { Separator } from '../../../components/ui/separator'; // If need to split the content
 
 export const metadata: Metadata = {
-  title: 'Home | Automation Solutions',
-  description: 'Welcome to the home page of automation solutions.',
+  title: 'Home | The Source Build',
+  description: 'Welcome to the home page of The Source Build',
 };
 
 export default async function Home() {
@@ -25,8 +25,8 @@ export default async function Home() {
       <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-6">
         <div className="container">
           <div className="flex justify-between items-center">
-            <h2 className="text-2xl font-semibold text-foreground">Dashboard</h2>
-            <p className="text-sm text-muted-foreground">
+            <h1 className="text-3xl font-semibold text-foreground">Dashboard</h1>
+            <p className="text-lg text-muted-foreground">
               Welcome back, {session.user.username}
             </p>
           </div>
@@ -39,18 +39,18 @@ export default async function Home() {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                  Welcome to Automation Solutions
+                  Welcome to The Source Build
                 </h1>
                 <Button variant="outline">Get Started</Button>
               </div>
 
               <p className="text-lg text-muted-foreground leading-relaxed">
-                This is your centralized automation hub. Access and manage all your automation
-                solutions from one place, with seamless integration and powerful controls.
-                <div className="flex justify-center mt-4">
-                  <Image className="ima" src="/astronaut.png" width={500} height={500} alt="Picture" />
-                </div>
+                This is your centralized hub of The Source Build, where you can access all of our
+                services and tools to help you build and deploy your applications and automation.
               </p>
+                <div className="flex justify-center mt-4">
+                <Image src="/sputnik.png" width={500} height={500} alt="Sputnik" />
+                </div>
 
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 <Card className="bg-background/60 backdrop-blur supports-[backdrop-filter]:bg-background/40">
@@ -99,10 +99,9 @@ export default async function Home() {
       <footer className="border-t border-border bg-background p-6">
         <div className="container">
           <div className="flex flex-col gap-4">
-            <Separator />
             <div className="flex justify-between text-sm text-muted-foreground">
-              <p>© 2024 Automation Solutions</p>
-              <p>Built with ❤️ by Cyber Junk1e</p>
+              <p>© 2024 The Source Build</p>
+              <p>Built with ❤️ by Cyber_Junk1e</p>
             </div>
           </div>
         </div>

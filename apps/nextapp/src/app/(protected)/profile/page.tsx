@@ -166,137 +166,148 @@ export default function Profile() {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle className="text-2xl font-semibold text-center">
-          Profile Settings
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Display error message if exists */}
-          {error && (
-            <div role="alert" className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">
-              {error}
-            </div>
-          )}
-          {/* Display success message if exists */}
-          {success && (
-            <div role="alert" className="p-3 text-sm text-green-600 bg-green-100 rounded-md">
-              {success}
-            </div>
-          )}
-
-          {/* Username field with toggle for edit mode */}
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <label className="text-sm font-medium">Username</label>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => toggleEditMode('username')}
-              >
-                {editMode.username ? 'Cancel' : 'Edit'}
-              </Button>
-            </div>
-            <Input
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-              disabled={!editMode.username || isLoading}
-              className="bg-background"
-            />
-          </div>
-
-          {/* Email field with toggle for edit mode */}
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <label className="text-sm font-medium">Email</label>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => toggleEditMode('email')}
-              >
-                {editMode.email ? 'Cancel' : 'Edit'}
-              </Button>
-            </div>
-            <Input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              disabled={!editMode.email || isLoading}
-              className="bg-background"
-            />
-          </div>
-
-          {/* Password fields with toggle for edit mode */}
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <label className="text-sm font-medium">Password</label>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={() => toggleEditMode('password')}
-              >
-                {editMode.password ? 'Cancel' : 'Change Password'}
-              </Button>
-            </div>
-            {editMode.password && (
-              <div className="space-y-4">
-                <Input
-                  type="password"
-                  name="currentPassword"
-                  placeholder="Current Password"
-                  value={formData.currentPassword}
-                  onChange={handleInputChange}
-                  disabled={isLoading}
-                  className="bg-background"
-                />
-                <Input
-                  type="password"
-                  name="newPassword"
-                  placeholder="New Password"
-                  value={formData.newPassword}
-                  onChange={handleInputChange}
-                  disabled={isLoading}
-                  className="bg-background"
-                />
-                <Input
-                  type="password"
-                  name="confirmPassword"
-                  placeholder="Confirm New Password"
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  disabled={isLoading}
-                  className="bg-background"
-                />
+    <div className="flex flex-col min-h-screen">
+      {/* Main Card Content */}
+      <Card className="w-full max-w-2xl mx-auto mt-10">
+        <CardHeader>
+          <CardTitle className="text-2xl font-semibold text-center">
+            Profile Settings
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+              <div role="alert" className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">
+                {error}
               </div>
             )}
-          </div>
-
-          {/* Display Save Changes button only if any fields are in edit mode */}
-          {(editMode.username || editMode.email || editMode.password) && (
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Updating...
-                </>
-              ) : (
-                'Save Changes'
+            {success && (
+              <div role="alert" className="p-3 text-sm text-green-600 bg-green-100 rounded-md">
+                {success}
+              </div>
+            )}
+  
+            {/* Username Field */}
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-medium">Username</label>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => toggleEditMode('username')}
+                >
+                  {editMode.username ? 'Cancel' : 'Edit'}
+                </Button>
+              </div>
+              <Input
+                name="username"
+                value={formData.username}
+                onChange={handleInputChange}
+                disabled={!editMode.username || isLoading}
+                className="bg-background"
+              />
+            </div>
+  
+            {/* Email Field */}
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-medium">Email</label>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => toggleEditMode('email')}
+                >
+                  {editMode.email ? 'Cancel' : 'Edit'}
+                </Button>
+              </div>
+              <Input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                disabled={!editMode.email || isLoading}
+                className="bg-background"
+              />
+            </div>
+  
+            {/* Password Fields */}
+            <div className="space-y-2">
+              <div className="flex justify-between items-center">
+                <label className="text-sm font-medium">Password</label>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => toggleEditMode('password')}
+                >
+                  {editMode.password ? 'Cancel' : 'Change Password'}
+                </Button>
+              </div>
+              {editMode.password && (
+                <div className="space-y-4">
+                  <Input
+                    type="password"
+                    name="currentPassword"
+                    placeholder="Current Password"
+                    value={formData.currentPassword}
+                    onChange={handleInputChange}
+                    disabled={isLoading}
+                    className="bg-background"
+                  />
+                  <Input
+                    type="password"
+                    name="newPassword"
+                    placeholder="New Password"
+                    value={formData.newPassword}
+                    onChange={handleInputChange}
+                    disabled={isLoading}
+                    className="bg-background"
+                  />
+                  <Input
+                    type="password"
+                    name="confirmPassword"
+                    placeholder="Confirm New Password"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    disabled={isLoading}
+                    className="bg-background"
+                  />
+                </div>
               )}
-            </Button>
-          )}
-        </form>
-      </CardContent>
-    </Card>
+            </div>
+  
+            {/* Save Changes Button */}
+            {(editMode.username || editMode.email || editMode.password) && (
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  'Save Changes'
+                )}
+              </Button>
+            )}
+          </form>
+        </CardContent>
+      </Card>
+  
+      {/* Footer */}
+      <footer className="mt-auto border-t border-border bg-background p-6">
+        <div className="container">
+          <div className="flex justify-between text-sm text-muted-foreground">
+            <p>© 2024 The Source Build</p>
+            <p>Built with ❤️ by Cyber_Junk1e</p>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
 }
