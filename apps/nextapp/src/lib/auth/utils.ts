@@ -20,7 +20,8 @@ export async function signup(username: string, email: string, password: string) 
 
     // Automatically sign in the user after successful signup
     const result = await signIn('credentials', {
-      username: email,
+      email: email,
+      username: username,
       password: password,
       redirect: false,
       callbackUrl: '/home'
