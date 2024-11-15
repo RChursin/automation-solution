@@ -22,37 +22,38 @@ export default function Signup() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isLoading) return;
-    
+  
     setIsLoading(true);
     setError('');
-
+  
     try {
+      // Validate password requirements
+      const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{};:,<.>]{2,})[A-Za-z\d!@#$%^&*()\-_=+{};:,<.>]{8,}$/;
+      if (!passwordRegex.test(password)) {
+        throw new Error('Password must be at least 8 characters, include at least one uppercase letter, and two special symbols (e.g., "!@#"');
+      }
+
       // Validate password match
       if (password !== confirmPassword) {
         throw new Error('Passwords do not match');
-      }
-
-      // Validate password length
-      if (password.length < 6) {
-        throw new Error('Password must be at least 6 characters');
       }
 
       // Validate username length
       if (username.length < 3) {
         throw new Error('Username must be at least 3 characters');
       }
-
+  
       // Validate email format
       const emailRegex = /^\S+@\S+\.\S+$/;
       if (!emailRegex.test(email)) {
         throw new Error('Please provide a valid email address');
       }
-
+  
       const result = await signup(username, email, password);
-      
+  
       if (result.success) {
         router.push('/home');
-        router.refresh();
+        location.reload();
       } else {
         throw new Error(result.error || 'Signup failed');
       }

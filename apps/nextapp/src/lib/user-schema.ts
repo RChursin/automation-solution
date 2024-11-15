@@ -15,6 +15,7 @@ const UserSchema = new Schema<IUser>(
       unique: true,
       // Basic email validation at schema level
       match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email'],
+      lowercase: true,
     },
     password: {
       type: String,

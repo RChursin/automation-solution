@@ -10,6 +10,9 @@ export async function POST(request: NextRequest) {
     
     const { username, email, password } = await request.json();
 
+    // Convert email to lowercase for consistent storage and comparison
+    const normalizedEmail = email.toLowerCase();
+
     // Validate input
     if (!username || !email || !password) {
       return NextResponse.json(
@@ -18,17 +21,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Password requirements: at least 8 characters, one uppercase letter, and two special symbols
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{};:,<.>]{2,})[A-Za-z\d!@#$%^&*()\-_=+{};:,<.>]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      return NextResponse.json(
+        { error: 'Password must be at least 8 characters, include at least one uppercase letter, and two special symbols (e.g., "!@#"' },
+        { status: 400 }
+      );
+    }
+
     // Validate email format
     const emailRegex = /^\S+@\S+\.\S+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(normalizedEmail)) {
       return NextResponse.json(
         { error: 'Please provide a valid email address' },
         { status: 400 }
       );
     }
 
-    // Check if email already exists
-    const existingEmail = await User.findOne({ email });
+    // Check if email already exists in lowercase
+    const existingEmail = await User.findOne({ email: normalizedEmail });
     if (existingEmail) {
       return NextResponse.json(
         { error: 'Email already exists' },
@@ -51,7 +63,7 @@ export async function POST(request: NextRequest) {
     // Create new user
     const user = await User.create({
       username,
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
     });
 
