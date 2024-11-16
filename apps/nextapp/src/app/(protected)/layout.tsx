@@ -3,6 +3,13 @@ import { RootLayout } from '../../components/layouts/root-layout';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../lib/auth/options';
 import { redirect } from 'next/navigation';
+import { Metadata } from 'next';
+
+// Generic metadata for the protected section
+export const metadata: Metadata = {
+  title: 'The Source Build',
+  description: 'We are here to solve your automation challenges.',
+};
 
 export default async function ProtectedLayout({
   children,

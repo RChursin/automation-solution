@@ -1,89 +1,26 @@
-// apps/nextapp/src/app/notes/page.tsx
+// apps/nextapp/src/app/(protected)/notes/page.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
 import { Button } from "../../../components/ui/button";
 import { Input } from "../../../components/ui/input";
 import { Plus, Save, Trash2 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
+import { useNotes } from './useNotes';
 
-interface Note {
-  _id?: string;
-  title: string;
-  content: string;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
+/**
+ * Notes Page Component
+ * Renders the notes list and editor, utilizing the `useNotes` hook for logic.
+ */
 export default function NotesPage() {
-  const [notes, setNotes] = useState<Note[]>([]);
-  const [currentNote, setCurrentNote] = useState<Note>({
-    title: 'Untitled Note',
-    content: ''
-  });
-  const [saveStatus, setSaveStatus] = useState('');
-
-  // Fetch notes from API
-  useEffect(() => {
-    fetchNotes();
-  }, []);
-
-  const fetchNotes = async () => {
-    try {
-      const res = await fetch('/api/notes');
-      if (res.ok) {
-        const data = await res.json();
-        setNotes(data);
-      } else {
-        console.error('Failed to fetch notes');
-      }
-    } catch (error) {
-      console.error('Error fetching notes:', error);
-    }
-  };
-
-  const createNewNote = () => {
-    setCurrentNote({
-      title: 'Untitled Note',
-      content: ''
-    });
-  };
-
-  const saveNote = async () => {
-    setSaveStatus('Saving...');
-    try {
-      const res = await fetch('/api/notes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(currentNote),
-      });
-      if (res.ok) {
-        const newNote = await res.json();
-        setNotes([newNote, ...notes]);
-        setSaveStatus('Saved');
-      } else {
-        console.error('Failed to save note');
-        setSaveStatus('Failed to save');
-      }
-    } catch (error) {
-      console.error('Error saving note:', error);
-      setSaveStatus('Error saving');
-    }
-  };
-
-  const deleteNote = async (noteId: string) => {
-    if (!window.confirm('Are you sure you want to delete this note?')) return;
-    try {
-      const res = await fetch(`/api/notes/${noteId}`, { method: 'DELETE' });
-      if (res.ok) {
-        setNotes(notes.filter(note => note._id !== noteId));
-      } else {
-        console.error('Failed to delete note');
-      }
-    } catch (error) {
-      console.error('Error deleting note:', error);
-    }
-  };
+  const {
+    notes,
+    currentNote,
+    saveStatus,
+    createNewNote,
+    saveNote,
+    deleteNote,
+    setCurrentNote,
+  } = useNotes();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -136,7 +73,7 @@ export default function NotesPage() {
               value={currentNote.title}
               onChange={(e) => setCurrentNote({
                 ...currentNote,
-                title: e.target.value
+                title: e.target.value,
               })}
               placeholder="Note title"
               variant="ghost"
@@ -158,7 +95,7 @@ export default function NotesPage() {
               value={currentNote.content}
               onChange={(e) => setCurrentNote({
                 ...currentNote,
-                content: e.target.value
+                content: e.target.value,
               })}
               placeholder="Start typing your note..."
               className="h-full w-full resize-none border-none bg-transparent p-0 focus:outline-none"

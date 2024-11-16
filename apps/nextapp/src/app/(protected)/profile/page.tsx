@@ -1,192 +1,58 @@
 // apps/nextapp/src/app/(protected)/profile/page.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSession, signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
 import { Input } from '../../../components/ui/input';
 import { Loader2 } from 'lucide-react';
-import { updateProfile } from '../../../lib/auth/utils';
 import { LoadingSpinner } from '../../../components/loading-spinner';
-import { 
-  ProfileFormData, 
-  ProfileEditModeState, 
-  ProfileUpdateData,
-  PROFILE_ERRORS,
-  PROFILE_MESSAGES
-} from '../../../types/profile';
+import { useProfile } from './useProfile';
 
+/**
+ * Profile Page Component
+ * Renders the profile settings page, consuming the `useProfile` hook for logic.
+ */
 export default function Profile() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
+  const {
+    status,
+    isLoading,
+    error,
+    success,
+    formData,
+    editMode,
+    handleInputChange,
+    toggleEditMode,
+    handleSubmit,
+  } = useProfile();
 
-  // State to track loading, error, and success messages
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-
-  // State to store form data for profile fields
-  const [formData, setFormData] = useState<ProfileFormData>({
-    username: '',
-    email: '',
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-  });
-
-  // State to track which profile fields are in edit mode
-  const [editMode, setEditMode] = useState<ProfileEditModeState>({
-    username: false,
-    email: false,
-    password: false,
-  });
-
-  // Load user data into form when session is authenticated, redirect if not
-  useEffect(() => {
-    if (status === 'authenticated' && session?.user) {
-      setFormData({
-        username: session.user.username || '',
-        email: session.user.email || '',
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: '',
-      });
-    } else if (status === 'unauthenticated') {
-      setError("You are not authenticated");
-      router.push("/login");
-    }
-  }, [status, session, router]);
-
-  // Show a loading spinner while session status is loading
   if (status === 'loading') return <LoadingSpinner />;
-
-  // Handle input changes for form fields and update formData state
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // Toggle edit mode for a given field, resetting error/success messages
-  const toggleEditMode = (field: keyof ProfileEditModeState) => {
-    setEditMode((prev) => ({
-      ...prev,
-      [field]: !prev[field],
-    }));
-    setError('');
-    setSuccess('');
-  };
-
-  // Validate form fields before submitting changes
-  const validateForm = () => {
-    if (editMode.email && !/^\S+@\S+\.\S+$/.test(formData.email)) {
-      setError(PROFILE_ERRORS.INVALID_EMAIL);
-      return false;
-    }
-    if (editMode.password) {
-      if (!formData.currentPassword) {
-        setError(PROFILE_ERRORS.CURRENT_PASSWORD_REQUIRED);
-        return false;
-      }
-      if (formData.newPassword.length < 6) {
-        setError(PROFILE_ERRORS.PASSWORD_TOO_SHORT);
-        return false;
-      }
-      if (formData.newPassword !== formData.confirmPassword) {
-        setError(PROFILE_ERRORS.PASSWORDS_NOT_MATCH);
-        return false;
-      }
-    }
-    if (editMode.username && formData.username.length < 3) {
-      setError(PROFILE_ERRORS.USERNAME_TOO_SHORT);
-      return false;
-    }
-    return true;
-  };
-
-  // Handle form submission for profile update
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isLoading || !validateForm()) return;
-
-    setIsLoading(true);
-    setError('');
-    setSuccess('');
-
-    try {
-      // Prepare the update data based on edited fields
-      const updateData: ProfileUpdateData = {
-        userId: session?.user?.id || '',
-        ...(editMode.username && { username: formData.username }),
-        ...(editMode.email && { email: formData.email }),
-        ...(editMode.password && {
-          currentPassword: formData.currentPassword,
-          newPassword: formData.newPassword,
-        }),
-      };
-
-      // Send update request to server
-      const result = await updateProfile(updateData);
-
-      // Handle success or error in the result
-      if (result.success) {
-        setSuccess(PROFILE_MESSAGES.UPDATE_SUCCESS);
-        setEditMode({ username: false, email: false, password: false });
-        setFormData((prev) => ({
-          ...prev,
-          username: result.user?.username || prev.username,
-          email: result.user?.email || prev.email,
-          currentPassword: '',
-          newPassword: '',
-          confirmPassword: '',
-        }));
-        
-        // Reload page to show updated profile information
-        window.location.reload();
-
-        // Refresh session if user information was updated
-        if (session?.user?.username !== result.user?.username || session?.user?.email !== result.user?.email) {
-          await signIn('credentials', {
-            redirect: false,
-          });
-        }
-      } else {
-        throw new Error(result.error || PROFILE_ERRORS.UPDATE_FAILED);
-      }
-    } catch (err) {
-      console.error('Profile update error:', err);
-      setError((err as Error).message || PROFILE_ERRORS.UPDATE_FAILED);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Main Card Content */}
       <Card className="w-full max-w-2xl mx-auto mt-10">
         <CardHeader>
-          <CardTitle className="text-2xl font-semibold text-center">
-            Profile Settings
-          </CardTitle>
+          <CardTitle className="text-2xl font-semibold text-center">Profile Settings</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Error and Success Messages */}
             {error && (
-              <div role="alert" className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">
+              <div
+                role="alert"
+                className="p-3 text-sm text-destructive bg-destructive/10 rounded-md"
+              >
                 {error}
               </div>
             )}
             {success && (
-              <div role="alert" className="p-3 text-sm text-green-600 bg-green-100 rounded-md">
+              <div
+                role="alert"
+                className="p-3 text-sm text-green-600 bg-green-100 rounded-md"
+              >
                 {success}
               </div>
             )}
-  
+
             {/* Username Field */}
             <div className="space-y-2">
               <div className="flex justify-between items-center">
@@ -208,7 +74,7 @@ export default function Profile() {
                 className="bg-background"
               />
             </div>
-  
+
             {/* Email Field */}
             <div className="space-y-2">
               <div className="flex justify-between items-center">
@@ -231,7 +97,7 @@ export default function Profile() {
                 className="bg-background"
               />
             </div>
-  
+
             {/* Password Fields */}
             <div className="space-y-2">
               <div className="flex justify-between items-center">
@@ -277,14 +143,10 @@ export default function Profile() {
                 </div>
               )}
             </div>
-  
+
             {/* Save Changes Button */}
             {(editMode.username || editMode.email || editMode.password) && (
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isLoading}
-              >
+              <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -298,16 +160,6 @@ export default function Profile() {
           </form>
         </CardContent>
       </Card>
-  
-      {/* Footer */}
-      <footer className="mt-auto border-t border-border bg-background p-6">
-        <div className="container">
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <p>© 2024 The Source Build</p>
-            <p>RChursin 💡</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

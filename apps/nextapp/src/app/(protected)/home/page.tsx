@@ -1,17 +1,10 @@
 // apps/nextapp/src/app/(protected)/home/page.tsx
-import { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { authOptions } from '../../../lib/auth/options';
 import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
-// import { Separator } from '../../../components/ui/separator'; // If need to split the content
-
-export const metadata: Metadata = {
-  title: 'Home | The Source Build',
-  description: 'Welcome to the home page of The Source Build',
-};
 
 export default async function Home() {
   const session = await getServerSession(authOptions);

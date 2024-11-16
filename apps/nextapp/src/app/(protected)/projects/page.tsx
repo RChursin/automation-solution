@@ -1,14 +1,7 @@
 // apps/nextapp/src/app/projects/page.tsx
-import { Metadata } from 'next';
 import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
-// import { Separator } from '../../../components/ui/separator'; // If need to split the content
 import { FolderGit2, GitBranch, GitPullRequest } from 'lucide-react';
-
-export const metadata: Metadata = {
-  title: 'Projects | Automation Solutions',
-  description: 'Manage your automation projects and workflows.',
-};
 
 export default function ProjectsPage() {
   return (
