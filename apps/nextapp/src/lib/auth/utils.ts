@@ -1,7 +1,20 @@
 // apps/nextapp/src/lib/auth/utils.ts
+
 import { ProfileUpdateData, ProfileUpdateResponse, PROFILE_ERRORS } from '../../types/profile';
 import { signIn, signOut } from 'next-auth/react';
 
+/**
+ * Signs up a new user by sending their details to the backend.
+ * If successful, it logs in the user automatically.
+ *
+ * param {string} username - The username of the new user.
+ * param {string} email - The email address of the new user.
+ * param {string} password - The password of the new user.
+ * returns {Promise<{success: boolean; error?: string; suggestions?: string[]}>} - A promise resolving to the signup result.
+ * - `success`: `true` if the signup succeeded, otherwise `false`.
+ * - `error`: An error message if the signup failed.
+ * - `suggestions`: An array of suggested usernames if the desired username is unavailable.
+ */
 export async function signup(username: string, email: string, password: string) {
   try {
     // Send a request to create a new user
@@ -15,7 +28,11 @@ export async function signup(username: string, email: string, password: string) 
 
     // Check if signup was successful
     if (!response.ok) {
-      throw new Error(data.error || 'Signup failed');
+      return {
+        success: false,
+        error: data.error || 'Signup failed',
+        suggestions: data.suggestions || [], // Add suggestions if available
+      };
     }
 
     // Automatically sign in the user after successful signup
@@ -24,7 +41,7 @@ export async function signup(username: string, email: string, password: string) 
       username: username,
       password: password,
       redirect: false,
-      callbackUrl: '/home'
+      callbackUrl: '/home',
     });
 
     // Check if sign-in was successful
@@ -37,11 +54,16 @@ export async function signup(username: string, email: string, password: string) 
     // Return an error message if signup or sign-in fails
     return {
       success: false,
-      error: (error as Error).message || 'An unexpected error occurred'
+      error: (error as Error).message || 'An unexpected error occurred',
     };
   }
 }
 
+/**
+ * Logs out the currently authenticated user and redirects to the login page.
+ *
+ * returns {Promise<void>} - A promise resolving when the logout is complete.
+ */
 export async function logout() {
   try {
     // Sign the user out and redirect to the login page
@@ -51,6 +73,20 @@ export async function logout() {
   }
 }
 
+/**
+ * Updates the profile information of a user.
+ *
+ * param {ProfileUpdateData} data - An object containing profile update data.
+ * - `userId`: The ID of the user whose profile is being updated.
+ * - `username`: The new username (optional).
+ * - `email`: The new email address (optional).
+ * - `currentPassword`: The current password for authentication.
+ * - `newPassword`: The new password to update (optional).
+ * returns {Promise<ProfileUpdateResponse>} - A promise resolving to the profile update response.
+ * - `success`: `true` if the update succeeded, otherwise `false`.
+ * - `message`: A message indicating the result of the operation.
+ * - `user`: The updated user information.
+ */
 export async function updateProfile(data: ProfileUpdateData): Promise<ProfileUpdateResponse> {
   try {
     // Ensure the data contains a valid user ID
@@ -68,10 +104,10 @@ export async function updateProfile(data: ProfileUpdateData): Promise<ProfileUpd
         username: data.username,
         email: data.email,
         currentPassword: data.currentPassword,
-        newPassword: data.newPassword
+        newPassword: data.newPassword,
       }),
       credentials: 'include',
-      cache: 'no-store'
+      cache: 'no-store',
     });
 
     const result = await response.json();
@@ -85,14 +121,14 @@ export async function updateProfile(data: ProfileUpdateData): Promise<ProfileUpd
     return {
       success: true,
       message: result.message,
-      user: result.user
+      user: result.user,
     };
   } catch (error) {
     console.error('Profile update error:', error);
     // Return an error message if the update fails
     return {
       success: false,
-      error: error instanceof Error ? error.message : PROFILE_ERRORS.UPDATE_FAILED
+      error: error instanceof Error ? error.message : PROFILE_ERRORS.UPDATE_FAILED,
     };
   }
 }
