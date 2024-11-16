@@ -304,7 +304,7 @@ export default function Profile() {
         <div className="container">
           <div className="flex justify-between text-sm text-muted-foreground">
             <p>© 2024 The Source Build</p>
-            <p>Built with ❤️ by Cyber_Junk1e</p>
+            <p>RChursin 💡</p>
           </div>
         </div>
       </footer>
