@@ -4,8 +4,19 @@ import dbConnect from '../../../../lib/mongodb';
 import { User } from '../../../../lib/user-schema';
 import bcrypt from 'bcrypt';
 
+/**
+ * Handles the POST request for user signup.
+ * - Validates user input (username, email, password).
+ * - Checks if the username and email are already in use.
+ * - If the username is taken, generates unique suggestions.
+ * - Hashes the password and creates a new user in the database.
+ *
+ * param {NextRequest} request - The HTTP request object containing user details in JSON format.
+ * returns {Promise<NextResponse>} - A response indicating success or failure, with optional suggestions.
+ */
 export async function POST(request: NextRequest) {
   try {
+    // Establish database connection
     await dbConnect();
     
     const { username, email, password } = await request.json();
@@ -21,7 +32,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Password requirements: at least 8 characters, one uppercase letter, and two special symbols
+    // Validate password requirements
     const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{};:,<.>]{2,})[A-Za-z\d!@#$%^&*()\-_=+{};:,<.>]{8,}$/;
     if (!passwordRegex.test(password)) {
       return NextResponse.json(
@@ -39,7 +50,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if email already exists in lowercase
+    // Check if email already exists
     const existingEmail = await User.findOne({ email: normalizedEmail });
     if (existingEmail) {
       return NextResponse.json(
@@ -51,22 +62,39 @@ export async function POST(request: NextRequest) {
     // Check if username already exists
     const existingUsername = await User.findOne({ username });
     if (existingUsername) {
+      // Fetch existing usernames from the database
+      const existingUsernames = await User.find({}, 'username').lean();
+      const existingSet = new Set(existingUsernames.map((user) => user.username));
+
+      // Generate unique suggestions
+      const suggestions = [];
+      let attempts = 0;
+
+      while (suggestions.length < 3 && attempts < 10) {
+        const suggestion = generateUniqueSuggestion(username, suggestions);
+        if (!existingSet.has(suggestion)) {
+          suggestions.push(suggestion);
+        }
+        attempts++;
+      }
+
       return NextResponse.json(
-        { error: 'Username already exists' },
+        { error: 'Username already exists', suggestions },
         { status: 400 }
       );
     }
 
-    // Hash password
+    // Hash the user's password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Create new user
+    // Create new user record
     const user = await User.create({
       username,
       email: normalizedEmail,
       password: hashedPassword,
     });
 
+    // Return a success response
     return NextResponse.json(
       { 
         success: true, 
@@ -86,4 +114,27 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+/**
+ * Generates a unique username suggestion based on the base username.
+ * Avoids suggesting usernames already included in `existingSuggestions`.
+ *
+ * param {string} base - The base username to generate suggestions from.
+ * param {string[]} existingSuggestions - List of suggestions already provided.
+ * returns {string} - A unique username suggestion.
+ */
+function generateUniqueSuggestion(base: string, existingSuggestions: string[]) {
+  const randomSuffix = Math.floor(Math.random() * 1000); // Generate a random number as a suffix
+  const reversed = base.split('').reverse().join(''); // Reverse the base username
+  const patterns = [`${base}${randomSuffix}`, `${reversed}${randomSuffix}`, `${base}_${randomSuffix}`];
+
+  // Return the first unique pattern
+  for (const suggestion of patterns) {
+    if (!existingSuggestions.includes(suggestion)) {
+      return suggestion;
+    }
+  }
+  // Fallback in case no unique pattern is found
+  return `${base}_${randomSuffix}`;
 }

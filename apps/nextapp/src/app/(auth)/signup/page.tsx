@@ -4,66 +4,32 @@
 import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
 import { Input } from '../../../components/ui/input';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { signup } from '../../../lib/auth/utils';
 import { Loader2 } from 'lucide-react';
+import { useSignup } from './useSignup';
 
-export default function Signup() {
-  const router = useRouter();
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isLoading) return;
-  
-    setIsLoading(true);
-    setError('');
-  
-    try {
-      // Validate password requirements
-      const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{};:,<.>]{2,})[A-Za-z\d!@#$%^&*()\-_=+{};:,<.>]{8,}$/;
-      if (!passwordRegex.test(password)) {
-        throw new Error('Password must be at least 8 characters, include at least one uppercase letter, and two special symbols (e.g., "!@#"');
-      }
-
-      // Validate password match
-      if (password !== confirmPassword) {
-        throw new Error('Passwords do not match');
-      }
-
-      // Validate username length
-      if (username.length < 3) {
-        throw new Error('Username must be at least 3 characters');
-      }
-  
-      // Validate email format
-      const emailRegex = /^\S+@\S+\.\S+$/;
-      if (!emailRegex.test(email)) {
-        throw new Error('Please provide a valid email address');
-      }
-  
-      const result = await signup(username, email, password);
-  
-      if (result.success) {
-        router.push('/home');
-        location.reload();
-      } else {
-        throw new Error(result.error || 'Signup failed');
-      }
-    } catch (error) {
-      console.error('Signup error:', error);
-      setError((error as Error).message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+/**
+ * Signup page component.
+ * Handles rendering the UI for account creation and integrates with the useSignup hook.
+ *
+ * returns {JSX.Element} - The signup form UI.
+ */
+export default function Signup(): JSX.Element {
+  // Extract state and handlers from the custom hook
+  const {
+    username,
+    setUsername,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    confirmPassword,
+    setConfirmPassword,
+    error,
+    isLoading,
+    suggestions,
+    handleSignup,
+  } = useSignup();
 
   return (
     <Card className="w-full max-w-md">
@@ -74,16 +40,36 @@ export default function Signup() {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSignup} className="space-y-4">
+          {/* Error Message */}
           {error && (
-            <div 
-              role="alert" 
-              aria-live="polite" 
+            <div
+              role="alert"
+              aria-live="polite"
               className="p-3 text-sm text-destructive bg-destructive/10 rounded-md"
             >
               {error}
             </div>
           )}
-          
+
+          {/* Username Suggestions */}
+          {suggestions.length > 0 && (
+            <div className="mt-2">
+              <p className="text-sm text-muted-foreground">Try one of these:</p>
+              <ul className="space-y-1">
+                {suggestions.map((suggestion, index) => (
+                  <li
+                    key={index}
+                    className="cursor-pointer text-primary hover:underline"
+                    onClick={() => setUsername(suggestion)} // Update username when a suggestion is clicked
+                  >
+                    {suggestion}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Input Fields */}
           <div className="space-y-4">
             <Input
               placeholder="Username"
@@ -114,7 +100,7 @@ export default function Signup() {
               disabled={isLoading}
               autoComplete="new-password"
               className="bg-background"
-              minLength={6}
+              minLength={8}
             />
             <Input
               type="password"
@@ -128,11 +114,8 @@ export default function Signup() {
             />
           </div>
 
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isLoading}
-          >
+          {/* Submit Button */}
+          <Button type="submit" className="w-full" disabled={isLoading}>
             {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -143,12 +126,10 @@ export default function Signup() {
             )}
           </Button>
 
+          {/* Redirect to Login */}
           <p className="text-sm text-center text-muted-foreground">
             Already have an account?{' '}
-            <Link 
-              href="/login"
-              className="text-primary hover:underline"
-            >
+            <Link href="/login" className="text-primary hover:underline">
               Login
             </Link>
           </p>
