@@ -22,6 +22,13 @@ export default function NotesPage() {
     setCurrentNote,
   } = useNotes();
 
+  /**
+   * Handles manual save operation.
+   */
+  const handleSave = () => {
+    saveNote();
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Main Content */}
@@ -83,7 +90,7 @@ export default function NotesPage() {
               <span className="text-sm text-muted-foreground">
                 {saveStatus}
               </span>
-              <Button onClick={saveNote}>
+              <Button onClick={handleSave}>
                 <Save className="mr-2 h-4 w-4" />
                 Save
               </Button>
