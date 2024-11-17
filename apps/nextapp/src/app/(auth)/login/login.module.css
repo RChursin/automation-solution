@@ -1,0 +1,36 @@
+/* login.module.css */
+
+/* Full-screen background with gradient and overlay */
+.login-container {
+  @apply flex items-center justify-center min-h-screen w-full bg-gradient-to-br from-gray-800 via-gray-900 to-black relative;
+}
+
+/* Background image styling */
+.login-background {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.2;
+  z-index: 0;
+}
+
+/* Card styling */
+.login-card {
+  @apply relative z-10 w-full max-w-sm bg-white/10 backdrop-blur-md shadow-lg rounded-lg;
+}
+
+/* Error alert styling */
+.error-alert {
+  @apply p-3 text-sm text-red-500 bg-white/5 rounded-md;
+}
+
+/* Input fields */
+.input-field {
+  @apply bg-gray-700 text-white;
+}
+
+/* Submit button */
+.submit-button {
+  @apply w-full bg-red-300 text-white hover:bg-red-400;
+}
