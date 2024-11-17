@@ -5,65 +5,74 @@ import { authOptions } from '../../../lib/auth/options';
 import dbConnect from '../../../lib/mongodb';
 import { Note } from '../../../lib/note-schema';
 
+/**
+ * Helper function to validate the session.
+ * Ensures the user is authenticated.
+ */
+async function validateSession() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    throw NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  return session.user;
+}
+
+/**
+ * GET /api/notes
+ * Fetches all notes for the authenticated user.
+ */
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-    console.log('Current session:', session); // Debug log
-    
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
+    const user = await validateSession();
     await dbConnect();
-    const notes = await Note.find({ userId: session.user.id })
+
+    const notes = await Note.find({ userId: user.id })
       .sort({ updatedAt: -1 })
       .lean();
 
-    console.log('Found notes:', notes); // Debug log
     return NextResponse.json(notes);
   } catch (error) {
     console.error('GET Error:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch notes' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch notes' }, { status: 500 });
   }
 }
 
+/**
+ * POST /api/notes
+ * Creates a new note or updates an existing note for the authenticated user.
+ */
 export async function POST(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    console.log('Create note session:', session); // Debug log
-    
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
+    const user = await validateSession();
+    await dbConnect();
+
+    const data = await request.json();
+
+    // Check if the note already exists (has an `_id`)
+    if (data._id) {
+      const updatedNote = await Note.findOneAndUpdate(
+        { _id: data._id, userId: user.id },
+        { title: data.title, content: data.content, updatedAt: new Date() },
+        { new: true }
       );
+
+      if (!updatedNote) {
+        return NextResponse.json({ error: 'Note not found or unauthorized' }, { status: 404 });
+      }
+
+      return NextResponse.json(updatedNote, { status: 200 });
     }
 
-    await dbConnect();
-    const data = await request.json();
-    console.log('Creating note with data:', { ...data, userId: session.user.id }); // Debug log
-
-    const noteData = {
-      userId: session.user.id,
+    // Otherwise, create a new note
+    const newNote = await Note.create({
+      userId: user.id,
       title: data.title || 'Untitled Note',
       content: data.content || '',
-    };
+    });
 
-    const note = await Note.create(noteData);
-    console.log('Created note:', note); // Debug log
-    
-    return NextResponse.json(note, { status: 201 });
+    return NextResponse.json(newNote, { status: 201 });
   } catch (error) {
     console.error('POST Error:', error);
-    return NextResponse.json(
-      { error: 'Failed to create note' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to create or update note' }, { status: 500 });
   }
 }
