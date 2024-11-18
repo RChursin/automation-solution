@@ -1,12 +1,12 @@
-/* login.module.css */
+/* signup.module.css */
 
 /* Full-screen background with gradient and overlay */
-.login-container {
+.signup-container {
   @apply flex items-center justify-center min-h-screen w-full bg-gradient-to-br from-gray-800 via-gray-900 to-black relative;
 }
 
 /* Background image styling */
-.login-background {
+.signup-background {
   position: absolute;
   inset: 0;
   background-size: cover;
@@ -16,7 +16,7 @@
 }
 
 /* Card styling */
-.login-card {
+.signup-card {
   @apply relative z-10 w-full max-w-sm bg-white/10 backdrop-blur-md shadow-lg rounded-lg;
 }
 

@@ -23,7 +23,7 @@ export default function Login() {
       {/* Background Animation or Image */}
       <div
         className={styles['login-background']}
-        style={{ backgroundImage: 'url("/night.jpg")' }}
+        style={{ backgroundImage: 'url("")' }}
       ></div>
 
       {/* Login Card */}
@@ -48,7 +48,7 @@ export default function Login() {
             <div className="space-y-4">
               {/* Email Input */}
               <Input
-                placeholder="Email"
+                placeholder="Email*"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -61,7 +61,7 @@ export default function Login() {
               <div className="relative">
                 <Input
                   type={isPasswordVisible ? 'text' : 'password'} // Toggle between text and password
-                  placeholder="Password"
+                  placeholder="Password*"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -75,7 +75,7 @@ export default function Login() {
                   onClick={() => setIsPasswordVisible(!isPasswordVisible)}
                   aria-label={isPasswordVisible ? 'Hide password' : 'Show password'}
                 >
-                  {isPasswordVisible ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  {isPasswordVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
@@ -99,7 +99,7 @@ export default function Login() {
               Don&apos;t have an account?{' '}
               <Link
                 href="/signup"
-                className="text-red-300 hover:text-red-400"
+                className="text-gray-200 hover:text-gray-400"
               >
                 Sign up
               </Link>
