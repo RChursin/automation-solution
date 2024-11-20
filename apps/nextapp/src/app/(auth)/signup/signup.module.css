@@ -22,15 +22,75 @@
 
 /* Error alert styling */
 .error-alert {
-  @apply p-3 text-sm text-red-500 bg-white/5 rounded-md;
+  @apply p-4 text-xs text-red-500 rounded-md;
+}
+
+/* Input container to handle positioning */
+.input-container {
+  @apply relative mb-4;
 }
 
 /* Input fields */
 .input-field {
-  @apply bg-gray-700 text-white;
+  @apply bg-gray-700 text-white pr-10 w-full; /* Added w-full to ensure full width */
 }
 
 /* Submit button */
 .submit-button {
   @apply w-full bg-gray-400 text-black hover:bg-gray-300;
+}
+
+/* Password visibility toggle button - Updated positioning */
+.password-toggle {
+  position: absolute;
+  top: 0.5rem; /* Centers the icon vertically within the input */
+  right: 0.75rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #9ca3af;
+  z-index: 10;
+}
+
+.password-toggle:hover {
+  color: #ffffff;
+}
+
+/* Validation error message */
+.validation-error {
+  @apply text-xs text-red-400/90 mt-1.5 ml-0.5; /* Smaller text, less top margin, slight left margin */
+  opacity: 0.9; /* Slightly reduce the opacity for better visual hierarchy */
+}
+
+/* Input validation states */
+.input-field.valid {
+  @apply border border-green-500;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2322c55e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+}
+
+/* Input validation states */
+.input-field.invalid {
+  @apply border border-red-400/50;  /* Softer red border */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f87171' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+}
+
+/* Update the suggestions to be red like error messages */
+.suggestions-list {
+  @apply text-xs text-gray-400 mt-1 ml-0.5 flex flex-wrap gap-1 items-center;
+}
+
+.suggestion-item {
+  @apply inline-flex cursor-pointer hover:text-gray-200 transition-colors;
 }

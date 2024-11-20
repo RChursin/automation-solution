@@ -4,7 +4,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
 import { Input } from '../../../components/ui/input';
 import { Button } from '../../../components/ui/button';
-import { Loader2, Eye, EyeOff } from 'lucide-react'; // Icons for password visibility toggle
+import { Loader2, Eye, EyeOff } from 'lucide-react';
 import { useSignup } from './useSignup';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -12,13 +12,11 @@ import styles from './signup.module.css';
 
 /**
  * Signup Page Component
- * Handles rendering the UI for account creation and integrates with the useSignup hook.
- * Provides features such as input validation, password visibility toggle, and form submission.
+ * Provides a user-friendly signup form with validation, password visibility toggle, and enhanced UI feedback.
  *
- * returns {JSX.Element} - The signup form UI.
+ * @returns {JSX.Element} The signup form.
  */
 export default function Signup(): JSX.Element {
-  // Extract state and handlers from the custom useSignup hook
   const {
     username,
     setUsername,
@@ -32,6 +30,8 @@ export default function Signup(): JSX.Element {
     isLoading,
     suggestions,
     handleSignup,
+    validationErrors,
+    validateField,
   } = useSignup();
 
   // State for toggling password and confirm password visibility
@@ -43,8 +43,8 @@ export default function Signup(): JSX.Element {
       {/* Background Animation or Image */}
       <div
         className={styles['signup-background']}
-        style={{ backgroundImage: 'url("")' }} // Example background image
-      ></div>
+        style={{ backgroundImage: 'url("/background.jpg")' }}
+      />
 
       {/* Signup Card */}
       <Card className={styles['signup-card']}>
@@ -56,114 +56,114 @@ export default function Signup(): JSX.Element {
         <CardContent>
           <form onSubmit={handleSignup} className="space-y-4">
             {/* Error Message */}
-            {error && (
-              <div
-                role="alert"
-                aria-live="polite"
-                className={styles['error-alert']}
-              >
+            {/* {error && (
+              <div role="alert" className={styles['error-alert']}>
                 {error}
               </div>
-            )}
+            )} */}
 
-            {/* Username Suggestions */}
-            {suggestions.length > 0 && (
-              <div className="mt-2">
-                <p className="text-sm text-muted-foreground">
-                  Try one of these suggestions:
-                </p>
-                <ul className="space-y-1">
-                  {suggestions.map((suggestion, index) => (
-                    <li
-                      key={index}
-                      className="cursor-pointer text-primary hover:underline"
-                      onClick={() => setUsername(suggestion)} // Update username when a suggestion is clicked
-                    >
-                      {suggestion}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-            {/* Input Fields */}
-            <div className="space-y-4">
-              {/* Username Input */}
+            {/* Username Input with Suggestions */}
+            <div>
               <Input
                 placeholder="Username*"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                onBlur={() => validateField('username')}
                 required
-                disabled={isLoading}
-                autoComplete="username"
-                className={styles['input-field']}
+                className={`${styles['input-field']} ${
+                  error === 'Username already exists' ? styles.invalid : 
+                  username && !error && !validationErrors.username ? styles.valid : ''
+                }`}
                 minLength={3}
               />
+              {error === 'Username already exists' && (
+                <p className={styles['validation-error']}>
+                  Username already exists.
+                </p>
+              )}
+              {suggestions.length > 0 && (
+                <div className={styles['suggestions-list']}>
+                  Try: {suggestions.map((suggestion, index) => (
+                    <div
+                      key={index}
+                      className={styles['suggestion-item']}
+                      onClick={() => setUsername(suggestion)}
+                    >
+                      {suggestion}{index < suggestions.length - 1 ? ', ' : ''}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
-              {/* Email Input */}
+            {/* Email Input */}
+            <div>
               <Input
                 type="email"
                 placeholder="Email*"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                onBlur={() => validateField('email')}
                 required
-                disabled={isLoading}
-                autoComplete="email"
                 className={styles['input-field']}
               />
+              {validationErrors.email && (
+                <p className={styles['validation-error']}>
+                  {validationErrors.email}
+                </p>
+              )}
+            </div>
 
-              {/* Password Input with Toggle */}
-              <div className="relative">
-                <Input
-                  type={isPasswordVisible ? 'text' : 'password'} // Toggle between text and password
-                  placeholder="Password*"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  disabled={isLoading}
-                  autoComplete="new-password"
-                  className={styles['input-field']}
-                  minLength={8}
-                />
-                <button
-                  type="button"
-                  className="absolute right-3 top-2/4 -translate-y-2/4 text-gray-400 hover:text-gray-500"
-                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                  aria-label={isPasswordVisible ? 'Hide password' : 'Show password'}
-                >
-                  {isPasswordVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
+            {/* Password Input with Toggle */}
+            <div className={styles['input-container']}>
+              <Input
+                type={isPasswordVisible ? 'text' : 'password'}
+                placeholder="Password*"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                onBlur={() => validateField('password')}
+                required
+                className={styles['input-field']}
+              />
+              <button
+                type="button"
+                onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                className={styles['password-toggle']}
+                aria-label={isPasswordVisible ? 'Hide password' : 'Show password'}
+              >
+                {isPasswordVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+              {validationErrors.password && (
+                <p className={styles['validation-error']}>
+                  {validationErrors.password}
+                </p>
+              )}
+            </div>
 
-              {/* Confirm Password Input with Toggle */}
-              <div className="relative">
-                <Input
-                  type={isConfirmPasswordVisible ? 'text' : 'password'} // Toggle between text and password
-                  placeholder="Confirm Password*"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  disabled={isLoading}
-                  autoComplete="new-password"
-                  className={styles['input-field']}
-                />
-                <button
-                  type="button"
-                  className="absolute right-3 top-2/4 -translate-y-2/4 text-gray-400 hover:text-gray-500"
-                  onClick={() =>
-                    setIsConfirmPasswordVisible(!isConfirmPasswordVisible)
-                  }
-                  aria-label={
-                    isConfirmPasswordVisible ? 'Hide password' : 'Show password'
-                  }
-                >
-                  {isConfirmPasswordVisible ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-              </div>
+            {/* Confirm Password Input with Toggle */}
+            <div className={styles['input-container']}>
+              <Input
+                type={isConfirmPasswordVisible ? 'text' : 'password'}
+                placeholder="Confirm Password*"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                onBlur={() => validateField('confirmPassword')}
+                required
+                className={styles['input-field']}
+              />
+              <button
+                type="button"
+                onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
+                className={styles['password-toggle']}
+                aria-label={isConfirmPasswordVisible ? 'Hide password' : 'Show password'}
+              >
+                {isConfirmPasswordVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+              {validationErrors.confirmPassword && (
+                <p className={styles['validation-error']}>
+                  {validationErrors.confirmPassword}
+                </p>
+              )}
             </div>
 
             {/* Submit Button */}
@@ -185,10 +185,7 @@ export default function Signup(): JSX.Element {
             {/* Redirect to Login */}
             <p className="text-sm text-center text-gray-300">
               Already have an account?{' '}
-              <Link
-                href="/login"
-                className="text-gray-200 hover:text-gray-400"
-              >
+              <Link href="/login" className="text-gray-200 hover:text-gray-400">
                 Login
               </Link>
             </p>
