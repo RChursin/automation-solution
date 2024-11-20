@@ -1,119 +1,112 @@
 // src/app/(auth)/login/page.tsx
 'use client';
 
-import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
 import { Input } from '../../../components/ui/input';
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { Button } from '../../../components/ui/button';
+import { Loader2, Eye, EyeOff } from 'lucide-react'; // Import icons for visibility toggle
+import { useLogin } from './useLogin';
 import Link from 'next/link';
-import { Loader2 } from 'lucide-react';
+import styles from './login.module.css';
+import { useState } from 'react';
 
+/**
+ * Login Page Component
+ * Renders the login form with a full-screen background and responsive design.
+ */
 export default function Login() {
-  const router = useRouter();
-  const [email, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (isLoading) return;
-    
-    setIsLoading(true);
-    setError('');
-
-    try {
-      const result = await signIn('credentials', {
-        email: email,        // Use email instead of username
-        password: password,
-        redirect: false,
-        callbackUrl: '/home'
-      });
-
-      if (result?.error) {
-        setError(result.error);
-      } else if (result?.ok) {
-        router.push('/home');
-        router.refresh();
-      }
-    } catch (err) {
-      setError('An unexpected error occurred');
-      console.error(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { email, password, setEmail, setPassword, error, isLoading, handleLogin } = useLogin();
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false); // State to toggle password visibility
 
   return (
-    <Card className="w-full max-w-md">
-      <CardHeader>
-        <CardTitle className="text-2xl font-semibold text-center">
-          Login to Your Account
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleLogin} className="space-y-4">
-          {error && (
-            <div 
-              role="alert" 
-              aria-live="polite" 
-              className="p-3 text-sm text-destructive bg-destructive/10 rounded-md"
-            >
-              {error}
-            </div>
-          )}
-          
-          <div className="space-y-4">
-            <Input
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              disabled={isLoading}
-              autoComplete="username"
-              className="bg-background"
-            />
-            <Input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              disabled={isLoading}
-              autoComplete="current-password"
-              className="bg-background"
-            />
-          </div>
+    <div className={styles['login-container']}>
+      {/* Background Animation or Image */}
+      <div
+        className={styles['login-background']}
+        style={{ backgroundImage: 'url("")' }}
+      ></div>
 
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Logging in...
-              </>
-            ) : (
-              'Login'
+      {/* Login Card */}
+      <Card className={styles['login-card']}>
+        <CardHeader>
+          <CardTitle className="text-2xl font-semibold text-center text-white">
+            Login to Your Account
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleLogin} className="space-y-4">
+            {error && (
+              <div
+                role="alert"
+                aria-live="polite"
+                className={styles['error-alert']}
+              >
+                {error}
+              </div>
             )}
-          </Button>
 
-          <p className="text-sm text-center text-muted-foreground">
-            Don&apos;t have an account?{' '} {/* Use &apos; for single quotes to avoid syntax error */}
-            <Link 
-              href="/signup"
-              className="text-primary hover:underline"
+            <div className="space-y-4">
+              {/* Email Input */}
+              <Input
+                placeholder="Email*"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                disabled={isLoading}
+                autoComplete="username"
+                className={styles['input-field']}
+              />
+
+              {/* Password Input with Visibility Toggle */}
+              <div className="relative">
+                <Input
+                  type={isPasswordVisible ? 'text' : 'password'} // Toggle between text and password
+                  placeholder="Password*"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  autoComplete="current-password"
+                  className={styles['input-field']}
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-2/4 -translate-y-2/4 text-gray-400 hover:text-gray-500"
+                  onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                  aria-label={isPasswordVisible ? 'Hide password' : 'Show password'}
+                >
+                  {isPasswordVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              className={styles['submit-button']}
+              disabled={isLoading}
             >
-              Sign up
-            </Link>
-          </p>
-        </form>
-      </CardContent>
-    </Card>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Logging in...
+                </>
+              ) : (
+                'Login'
+              )}
+            </Button>
+
+            <p className="text-sm text-center text-gray-300">
+              Don&apos;t have an account?{' '}
+              <Link
+                href="/signup"
+                className="text-gray-200 hover:text-gray-400"
+              >
+                Sign up
+              </Link>
+            </p>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
