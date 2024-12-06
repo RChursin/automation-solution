@@ -1,0 +1,45 @@
+/* blog.module.css */
+
+.blog-container {
+  @apply flex min-h-screen flex-col bg-gradient-to-br from-gray-800 via-gray-900 to-black;
+}
+
+.blog-background {
+  @apply fixed inset-0 bg-cover bg-center opacity-20 z-0;
+}
+
+.blog-header {
+  @apply relative z-10 border-b border-white/10 bg-white/5 backdrop-blur-md p-6;
+}
+
+.blog-main {
+  @apply relative z-10 flex-1 p-6;
+}
+
+.content-card {
+  @apply border-white/10 bg-white/10 backdrop-blur-md shadow-lg;
+}
+
+.description {
+  @apply text-lg text-gray-300 leading-relaxed;
+}
+
+.blog-grid {
+  @apply grid gap-6 md:grid-cols-2 lg:grid-cols-3;
+}
+
+.blog-card {
+  @apply bg-white/10 backdrop-blur-md border-white/10 transition-all hover:bg-white/[0.15];
+}
+
+.new-post-button {
+  @apply bg-gray-400 text-black hover:bg-gray-300;
+}
+
+.blog-stats {
+  @apply mt-6 flex justify-between text-sm text-gray-500;
+}
+
+.blog-footer {
+  @apply relative z-10 border-t border-white/10 bg-white/5 backdrop-blur-md p-6;
+}
