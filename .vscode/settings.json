@@ -6,5 +6,10 @@
     "Signup",
     "nextauth",
     "thesource",
+    "turbopack",
+    "Monoid",
+    "monoid",
+    "Chursin",
+    "chursin",
   ]
 }
