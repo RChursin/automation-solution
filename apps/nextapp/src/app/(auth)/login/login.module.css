@@ -1,36 +1,42 @@
-/* login.module.css */
+/* apps/nextapp/src/app/(auth)/login/login.module.css */
 
-/* Full-screen background with gradient and overlay */
-.login-container {
-  @apply flex items-center justify-center min-h-screen w-full bg-gradient-to-br from-gray-800 via-gray-900 to-black relative;
+.loginContainer {
+  @apply flex justify-center items-center w-full;
 }
 
-/* Background image styling */
-.login-background {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  opacity: 0.2;
-  z-index: 0;
+/* Removed bg-white/10 from @apply here. Just keep base classes. */
+.loginCard {
+  @apply relative z-10 w-full max-w-sm backdrop-blur-md shadow-lg rounded-lg p-6;
 }
 
-/* Card styling */
-.login-card {
-  @apply relative z-10 w-full max-w-sm bg-white/10 backdrop-blur-md shadow-lg rounded-lg;
+/* Just text styling here. No slash-based colors in @apply. */
+.loginTitle {
+  @apply text-2xl font-semibold text-center text-white;
 }
 
-/* Error alert styling */
-.error-alert {
-  @apply p-3 text-sm text-red-500 bg-white/5 rounded-md;
+/* Removed bg-white/5 from @apply here. Only base classes. */
+.errorAlert {
+  @apply p-3 text-sm text-red-500 rounded-md;
 }
 
-/* Input fields */
-.input-field {
-  @apply bg-gray-700 text-white;
+.inputField {
+  @apply bg-gray-700 text-white w-full;
 }
 
-/* Submit button */
-.submit-button {
-  @apply w-full bg-gray-400 text-black hover:bg-gray-300;
+.visibilityToggle {
+  @apply absolute right-3 top-1/2 text-gray-400;
+  /* Remove -translate-y-1/2 from @apply. Use a custom transform: */
+  transform: translateY(-50%);
+}
+
+.submitButton {
+  @apply w-full bg-gray-400 text-black font-semibold py-2 rounded-md;
+}
+
+.signUpLink {
+  @apply text-sm text-center text-gray-300;
+}
+
+.signUpLinkAnchor {
+  @apply text-gray-200;
 }

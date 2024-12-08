@@ -1,38 +1,42 @@
-// apps/nextapp/src/app/projects/page.tsx
+/* apps/nextapp/src/app/(protected)/projects/page.tsx */
+
 import { Button } from '../../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
 import { FolderGit2, GitBranch, GitPullRequest } from 'lucide-react';
+import styles from './projects.module.css';
 
 export default function ProjectsPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-6">
-        <div className="container">
-          <h2 className="text-2xl font-semibold text-foreground">Projects Page Header</h2>
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
+      {/* Header */}
+      <header className={`${styles.header} bg-background/95`}>
+        <div className="container mx-auto">
+          <h2 className={styles.title}>Projects Dashboard</h2>
         </div>
       </header>
 
-      <main className="flex-1 p-6">
-        <div className="container">
-          <Card className="rounded-lg border bg-background/60 backdrop-blur supports-[backdrop-filter]:bg-background/40 p-6">
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                  Project Dashboard
-                </h1>
+      {/* Main Content */}
+      <main className="flex-1 py-10">
+        <div className="container mx-auto px-6">
+          {/* Content Card */}
+          <Card className={`${styles.contentCard} bg-background/60`}>
+            <div className={styles.cardInner}>
+              <div className={styles.headerRow}>
+                <h1 className={styles.heroTitle}>Project Dashboard</h1>
                 <Button>
                   New Project
                   <FolderGit2 className="ml-2 h-4 w-4" />
                 </Button>
               </div>
 
-              <p className="text-lg text-muted-foreground leading-relaxed">
+              <p className={styles.description}>
                 Manage and monitor your automation projects. Track progress, view statistics, and
                 manage workflows from a centralized dashboard.
               </p>
 
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                <Card className="bg-background/60 backdrop-blur supports-[backdrop-filter]:bg-background/40">
+              <div className={styles.cardGrid}>
+                {/* Apply bg-background/60 and hover:bg-background/70 here for each projectCard */}
+                <Card className={`${styles.projectCard} bg-background/60 hover:bg-background/70 p-4 transition-colors`}>
                   <CardHeader>
                     <GitBranch className="h-8 w-8 text-primary mb-2" />
                     <CardTitle>Active Projects</CardTitle>
@@ -45,7 +49,7 @@ export default function ProjectsPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-background/60 backdrop-blur supports-[backdrop-filter]:bg-background/40">
+                <Card className={`${styles.projectCard} bg-background/60 hover:bg-background/70 p-4 transition-colors`}>
                   <CardHeader>
                     <GitPullRequest className="h-8 w-8 text-primary mb-2" />
                     <CardTitle>Project Templates</CardTitle>
@@ -58,7 +62,7 @@ export default function ProjectsPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-background/60 backdrop-blur supports-[backdrop-filter]:bg-background/40">
+                <Card className={`${styles.projectCard} bg-background/60 hover:bg-background/70 p-4 transition-colors`}>
                   <CardHeader>
                     <FolderGit2 className="h-8 w-8 text-primary mb-2" />
                     <CardTitle>Project Analytics</CardTitle>
@@ -73,21 +77,19 @@ export default function ProjectsPage() {
               </div>
             </div>
           </Card>
-            <br />          
-            <div className="flex justify-between text-sm text-muted-foreground">
-              <p>Active Projects: 5</p>
-              <p>Last Updated: Today</p>
-            </div>
+
+          <div className={styles.stats}>
+            <p>Active Projects: 5</p>
+            <p>Last Updated: Today</p>
+          </div>
         </div>
       </main>
 
       {/* Footer */}
-     <footer className="border-t border-border bg-background p-6">
-        <div className="container">
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <p>© 2024 The Source Build</p>
-            <p>RChursin 💡</p>
-          </div>
+      <footer className={styles.footer}>
+        <div className="container mx-auto flex justify-between text-sm text-muted-foreground">
+          <p>© 2024 The Source Build</p>
+          <p>RChursin 💡</p>
         </div>
       </footer>
     </div>

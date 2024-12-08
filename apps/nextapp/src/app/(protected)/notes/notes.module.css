@@ -1,0 +1,70 @@
+/* apps/nextapp/src/app/(protected)/notes/notes.module.css */
+
+.header {
+  @apply border-b border-border backdrop-blur p-6;
+}
+
+.title {
+  @apply text-2xl font-semibold text-foreground;
+}
+
+.notesSection {
+  @apply p-6;
+}
+
+/* We no longer rely on grid for layout. Instead, we'll use flex in JSX.
+   Remove notesGrid and related column classes. */
+
+/* Sidebar and editor now handled by flex in JSX.
+   notesSidebar and noteEditor classes can remain minimal. */
+
+.notesSidebar {
+  /* Remove col-span classes and rely on flex in JSX */
+  @apply flex flex-col border-r border-border bg-background;
+}
+
+.newNoteContainer {
+  @apply p-4 border-b border-border;
+}
+
+.notesList {
+  @apply flex-1 overflow-auto;
+}
+
+.noteListItem {
+  @apply flex items-center justify-between p-4 transition-colors cursor-pointer;
+}
+
+.activeNote {
+  @apply bg-muted;
+}
+
+.noteContent {
+  @apply flex-1 overflow-hidden;
+}
+
+.deleteButton {
+  @apply opacity-0 transition-opacity;
+}
+
+/* For the editor */
+.noteEditor {
+  /* Remove col-span and bg-background from @apply */
+  @apply flex flex-col;
+}
+
+.editorHeader {
+  @apply flex items-center justify-between border-b border-border p-4 backdrop-blur;
+}
+
+.editorArea {
+  @apply flex-1 p-4;
+}
+
+.textarea {
+  @apply h-full w-full resize-none border-none bg-transparent p-0 focus:outline-none text-foreground;
+}
+
+.footer {
+  @apply border-t border-border bg-background p-6;
+}

@@ -1,0 +1,57 @@
+/* apps/nextapp/src/app/(protected)/profile/profile.module.css */
+
+.header {
+  @apply border-b border-border backdrop-blur p-6;
+}
+
+.title {
+  @apply text-2xl font-semibold text-foreground;
+}
+
+.profileSection {
+  @apply p-6;
+}
+
+.profileCard {
+  @apply w-full max-w-2xl mx-auto mt-10 rounded-lg border backdrop-blur;
+}
+
+.cardTitle {
+  @apply text-2xl font-semibold text-center text-foreground;
+}
+
+.form {
+  @apply space-y-6;
+}
+
+.errorAlert {
+  @apply p-3 text-sm text-destructive bg-destructive/10 rounded-md;
+}
+
+.successAlert {
+  @apply p-3 text-sm text-green-600 bg-green-100 rounded-md;
+}
+
+.fieldGroup {
+  @apply space-y-2;
+}
+
+.fieldHeader {
+  @apply flex justify-between items-center;
+}
+
+.fieldLabel {
+  @apply text-sm font-medium text-foreground;
+}
+
+.passwordFields {
+  @apply space-y-4;
+}
+
+.saveButton {
+  @apply w-full;
+}
+
+.footer {
+  @apply border-t border-border bg-background p-6;
+}

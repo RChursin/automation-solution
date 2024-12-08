@@ -1,14 +1,14 @@
-/* apps/nextapp/src/app/(protected)/blog/blog.module.css */
+/* apps/nextapp/src/app/(protected)/projects/projects.module.css */
 
-.blogHeader {
+.header {
   @apply border-b border-border backdrop-blur p-6;
 }
 
-.blogTitle {
+.title {
   @apply text-2xl font-semibold text-foreground;
 }
 
-.blogSection {
+.projectsSection {
   @apply p-6;
 }
 
@@ -28,26 +28,22 @@
   @apply text-3xl font-bold tracking-tight text-foreground;
 }
 
-.newPostButton {
-  @apply bg-gray-400 text-black;
-}
-
 .description {
   @apply text-lg text-muted-foreground leading-relaxed;
 }
 
-.blogGrid {
+.cardGrid {
   @apply grid gap-6 md:grid-cols-2 lg:grid-cols-3;
 }
 
-.blogCard {
-  @apply backdrop-blur border transition-all rounded-lg;
+.projectCard {
+  @apply backdrop-blur transition-all rounded-lg border;
 }
 
-.blogStats {
-  @apply mt-6 flex justify-between text-sm text-muted-foreground;
+.stats {
+  @apply flex justify-between text-sm text-muted-foreground mt-6;
 }
 
-.blogFooter {
+.footer {
   @apply border-t border-border bg-background p-6;
 }
