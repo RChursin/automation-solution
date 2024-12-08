@@ -1,8 +1,6 @@
 /* apps/nextapp/src/app/(protected)/notes/notes.module.css */
 
 .header {
-  /* Originally included supports-[backdrop-filter]:bg-background/60.
-     Just use base classes now and remove bg-background/95 from @apply. */
   @apply border-b border-border backdrop-blur p-6;
 }
 
@@ -14,28 +12,29 @@
   @apply p-6;
 }
 
-.notesGrid {
-  @apply grid grid-cols-12 divide-x border-border;
-}
+/* We no longer rely on grid for layout. Instead, we'll use flex in JSX.
+   Remove notesGrid and related column classes. */
+
+/* Sidebar and editor now handled by flex in JSX.
+   notesSidebar and noteEditor classes can remain minimal. */
 
 .notesSidebar {
-  @apply col-span-3 flex flex-col;
+  /* Remove col-span classes and rely on flex in JSX */
+  @apply flex flex-col border-r border-border bg-background;
 }
 
 .newNoteContainer {
-  @apply p-4 border-b border-border bg-background;
+  @apply p-4 border-b border-border;
 }
 
 .notesList {
   @apply flex-1 overflow-auto;
 }
 
-/* Remove hover:bg-muted/50 from @apply */
 .noteListItem {
   @apply flex items-center justify-between p-4 transition-colors cursor-pointer;
 }
 
-/* .activeNote is fine as is */
 .activeNote {
   @apply bg-muted;
 }
@@ -44,19 +43,17 @@
   @apply flex-1 overflow-hidden;
 }
 
-/* Remove group-hover:opacity-100 from @apply */
 .deleteButton {
   @apply opacity-0 transition-opacity;
 }
 
+/* For the editor */
 .noteEditor {
-  @apply col-span-9 flex flex-col bg-background;
+  /* Remove col-span and bg-background from @apply */
+  @apply flex flex-col;
 }
 
-/* Remove supports-[backdrop-filter]:bg-background/40 from @apply */
 .editorHeader {
-  /* Just keep bg-background/60 and backdrop-blur out of @apply if needed; 
-     Actually bg-background/60 is a slash-based color. We'll move it to JSX. */
   @apply flex items-center justify-between border-b border-border p-4 backdrop-blur;
 }
 

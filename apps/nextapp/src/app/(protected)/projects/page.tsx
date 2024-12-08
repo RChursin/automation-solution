@@ -7,17 +7,18 @@ import styles from './projects.module.css';
 
 export default function ProjectsPage() {
   return (
-    <>
-      {/* Add bg-background/95 here instead of in @apply */}
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
+      {/* Header */}
       <header className={`${styles.header} bg-background/95`}>
-        <div className="container">
+        <div className="container mx-auto">
           <h2 className={styles.title}>Projects Dashboard</h2>
         </div>
       </header>
 
-      <section className={styles.projectsSection}>
-        <div className="container">
-          {/* Add bg-background/60 here for contentCard */}
+      {/* Main Content */}
+      <main className="flex-1 py-10">
+        <div className="container mx-auto px-6">
+          {/* Content Card */}
           <Card className={`${styles.contentCard} bg-background/60`}>
             <div className={styles.cardInner}>
               <div className={styles.headerRow}>
@@ -34,8 +35,8 @@ export default function ProjectsPage() {
               </p>
 
               <div className={styles.cardGrid}>
-                {/* Add bg-background/60 and hover:bg-background/70 directly in JSX for projectCard */}
-                <Card className={`${styles.projectCard} bg-background/60 hover:bg-background/70`}>
+                {/* Apply bg-background/60 and hover:bg-background/70 here for each projectCard */}
+                <Card className={`${styles.projectCard} bg-background/60 hover:bg-background/70 p-4 transition-colors`}>
                   <CardHeader>
                     <GitBranch className="h-8 w-8 text-primary mb-2" />
                     <CardTitle>Active Projects</CardTitle>
@@ -48,7 +49,7 @@ export default function ProjectsPage() {
                   </CardContent>
                 </Card>
 
-                <Card className={`${styles.projectCard} bg-background/60 hover:bg-background/70`}>
+                <Card className={`${styles.projectCard} bg-background/60 hover:bg-background/70 p-4 transition-colors`}>
                   <CardHeader>
                     <GitPullRequest className="h-8 w-8 text-primary mb-2" />
                     <CardTitle>Project Templates</CardTitle>
@@ -61,7 +62,7 @@ export default function ProjectsPage() {
                   </CardContent>
                 </Card>
 
-                <Card className={`${styles.projectCard} bg-background/60 hover:bg-background/70`}>
+                <Card className={`${styles.projectCard} bg-background/60 hover:bg-background/70 p-4 transition-colors`}>
                   <CardHeader>
                     <FolderGit2 className="h-8 w-8 text-primary mb-2" />
                     <CardTitle>Project Analytics</CardTitle>
@@ -82,16 +83,15 @@ export default function ProjectsPage() {
             <p>Last Updated: Today</p>
           </div>
         </div>
-      </section>
+      </main>
 
+      {/* Footer */}
       <footer className={styles.footer}>
-        <div className="container">
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <p>© 2024 The Source Build</p>
-            <p>RChursin 💡</p>
-          </div>
+        <div className="container mx-auto flex justify-between text-sm text-muted-foreground">
+          <p>© 2024 The Source Build</p>
+          <p>RChursin 💡</p>
         </div>
       </footer>
-    </>
+    </div>
   );
 }

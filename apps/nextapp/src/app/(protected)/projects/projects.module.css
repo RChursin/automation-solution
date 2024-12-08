@@ -1,7 +1,6 @@
 /* apps/nextapp/src/app/(protected)/projects/projects.module.css */
 
 .header {
-  /* Remove bg-background/95 from @apply */
   @apply border-b border-border backdrop-blur p-6;
 }
 
@@ -13,7 +12,6 @@
   @apply p-6;
 }
 
-/* Remove bg-background/60 from @apply in contentCard */
 .contentCard {
   @apply rounded-lg border backdrop-blur p-6;
 }
@@ -38,7 +36,6 @@
   @apply grid gap-6 md:grid-cols-2 lg:grid-cols-3;
 }
 
-/* Remove bg-background/60 from @apply in projectCard */
 .projectCard {
   @apply backdrop-blur transition-all rounded-lg border;
 }
