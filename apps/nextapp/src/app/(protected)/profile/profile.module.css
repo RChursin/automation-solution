@@ -1,7 +1,6 @@
 /* apps/nextapp/src/app/(protected)/profile/profile.module.css */
 
 .header {
-  /* Remove bg-background/95 from @apply and apply it in JSX */
   @apply border-b border-border backdrop-blur p-6;
 }
 
@@ -13,7 +12,6 @@
   @apply p-6;
 }
 
-/* Remove bg-background/60 from @apply and apply it in JSX */
 .profileCard {
   @apply w-full max-w-2xl mx-auto mt-10 rounded-lg border backdrop-blur;
 }

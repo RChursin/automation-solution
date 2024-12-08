@@ -26,17 +26,18 @@ export default function Profile() {
   if (status === 'loading') return <LoadingSpinner />;
 
   return (
-    <>
-      {/* Add bg-background/95 here in JSX */}
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
+      {/* Header */}
       <header className={`${styles.header} bg-background/95`}>
-        <div className="container">
+        <div className="container mx-auto">
           <h2 className={styles.title}>Profile Settings</h2>
         </div>
       </header>
 
-      <section className={styles.profileSection}>
-        <div className="container">
-          {/* Add bg-background/60 here in JSX */}
+      {/* Main Content */}
+      <main className="flex-1 py-10">
+        <div className="container mx-auto px-6">
+          {/* Profile Card */}
           <Card className={`${styles.profileCard} bg-background/60`}>
             <CardHeader>
               <CardTitle className={styles.cardTitle}>Profile Details</CardTitle>
@@ -163,16 +164,15 @@ export default function Profile() {
             </CardContent>
           </Card>
         </div>
-      </section>
+      </main>
 
+      {/* Footer */}
       <footer className={styles.footer}>
-        <div className="container">
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <p>© 2024 The Source Build</p>
-            <p>RChursin 💡</p>
-          </div>
+        <div className="container mx-auto flex justify-between text-sm text-muted-foreground">
+          <p>© 2024 The Source Build</p>
+          <p>RChursin 💡</p>
         </div>
       </footer>
-    </>
+    </div>
   );
 }
