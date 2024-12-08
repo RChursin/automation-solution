@@ -1,9 +1,11 @@
-// apps/nextapp/src/app/layout.tsx
-// app/layout.tsx (Root layout)
-import { monoid } from '../app/fonts';
-import { Providers } from '../components/providers';
-import { ThemeProvider } from '../components/themes/theme-provider';
-import "./globals.css";
+/* apps/nextapp/src/app/layout.tsx */
+
+import './globals.css';
+import { Providers } from './providers';
+
+export const metadata = {
+  title: 'My App',
+};
 
 export default function RootLayout({
   children,
@@ -11,17 +13,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={monoid.variable}>
-      <body suppressHydrationWarning>
+    <html lang="en">
+      <body>
         <Providers>
-          <ThemeProvider 
-            attribute="class" 
-            defaultTheme="dark" 
-            enableSystem 
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
+          {children}
         </Providers>
       </body>
     </html>

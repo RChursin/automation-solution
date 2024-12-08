@@ -1,0 +1,37 @@
+/* apps/nextapp/src/app/(protected)/home/home.module.css */
+
+.header {
+  /* Previously included supports-[backdrop-filter]:bg-background/60 instructions,
+     now just use base classes in @apply. 
+     Remove bg-background/95 from @apply and apply in JSX. */
+  @apply border-b border-border backdrop-blur p-6;
+}
+
+.footer {
+  @apply border-t border-border bg-background p-6;
+}
+
+.heroSection {
+  @apply space-y-6;
+}
+
+.heroTitle {
+  @apply text-3xl font-bold tracking-tight text-foreground;
+}
+
+.heroSubtitle {
+  @apply text-lg text-muted-foreground leading-relaxed;
+}
+
+.imageContainer {
+  @apply flex justify-center mt-4;
+}
+
+.cardGrid {
+  @apply grid gap-6 md:grid-cols-2 lg:grid-cols-3;
+}
+
+/* Remove bg-background/60 from @apply and apply in JSX */
+.card {
+  @apply backdrop-blur rounded-lg border;
+}

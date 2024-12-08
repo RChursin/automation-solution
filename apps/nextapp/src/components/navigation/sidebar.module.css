@@ -1,0 +1,26 @@
+/* apps/nextapp/src/components/navigation/sidebar.module.css */
+
+.sidebar {
+  width: 250px;
+  background: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.sidebar nav ul li {
+  margin-bottom: 1rem;
+}
+
+.themeToggle {
+  margin-top: auto;
+  border: none;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+}

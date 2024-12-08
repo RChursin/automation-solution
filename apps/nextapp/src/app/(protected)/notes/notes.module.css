@@ -1,0 +1,73 @@
+/* apps/nextapp/src/app/(protected)/notes/notes.module.css */
+
+.header {
+  /* Originally included supports-[backdrop-filter]:bg-background/60.
+     Just use base classes now and remove bg-background/95 from @apply. */
+  @apply border-b border-border backdrop-blur p-6;
+}
+
+.title {
+  @apply text-2xl font-semibold text-foreground;
+}
+
+.notesSection {
+  @apply p-6;
+}
+
+.notesGrid {
+  @apply grid grid-cols-12 divide-x border-border;
+}
+
+.notesSidebar {
+  @apply col-span-3 flex flex-col;
+}
+
+.newNoteContainer {
+  @apply p-4 border-b border-border bg-background;
+}
+
+.notesList {
+  @apply flex-1 overflow-auto;
+}
+
+/* Remove hover:bg-muted/50 from @apply */
+.noteListItem {
+  @apply flex items-center justify-between p-4 transition-colors cursor-pointer;
+}
+
+/* .activeNote is fine as is */
+.activeNote {
+  @apply bg-muted;
+}
+
+.noteContent {
+  @apply flex-1 overflow-hidden;
+}
+
+/* Remove group-hover:opacity-100 from @apply */
+.deleteButton {
+  @apply opacity-0 transition-opacity;
+}
+
+.noteEditor {
+  @apply col-span-9 flex flex-col bg-background;
+}
+
+/* Remove supports-[backdrop-filter]:bg-background/40 from @apply */
+.editorHeader {
+  /* Just keep bg-background/60 and backdrop-blur out of @apply if needed; 
+     Actually bg-background/60 is a slash-based color. We'll move it to JSX. */
+  @apply flex items-center justify-between border-b border-border p-4 backdrop-blur;
+}
+
+.editorArea {
+  @apply flex-1 p-4;
+}
+
+.textarea {
+  @apply h-full w-full resize-none border-none bg-transparent p-0 focus:outline-none text-foreground;
+}
+
+.footer {
+  @apply border-t border-border bg-background p-6;
+}

@@ -1,0 +1,11 @@
+/* apps/nextapp/src/components/layouts/page-container.module.css */
+
+.pageContainer {
+  background: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+}

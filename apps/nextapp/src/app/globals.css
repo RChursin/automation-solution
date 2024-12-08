@@ -1,3 +1,5 @@
+/* apps/nextapp/src/app/globals.css */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -49,7 +51,6 @@
     --ring: 222.2 84% 4.9%;
   }
 
-  /* Font configuration */
   @font-face {
     font-family: 'Monoid Nerd Font Mono';
     src: url('/fonts/MonoidNerdFontMono-Retina.ttf') format('truetype');
@@ -58,26 +59,30 @@
     font-style: normal;
   }
 
-  /* Base styles */
+  /* Instead of @apply border-border, directly set border-color */
   * {
-    @apply border-border;
+    border-color: hsl(var(--border));
   }
 
+  /* Instead of @apply text-base and others if they reference non-existent classes,
+     ensure they are valid Tailwind classes. text-base is valid. */
   html {
-    @apply text-base; /* This will now use your larger base size */
-    @apply overflow-x-hidden;
+    @apply text-base overflow-x-hidden;
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
+    /* Instead of @apply bg-background text-foreground,
+       just set background and color directly if no tailwind classes match */
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    @apply antialiased;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
 
-  /* Optional: Make headings larger by default */
   h1 {
     @apply text-4xl font-bold;
   }
@@ -97,15 +102,14 @@
     @apply text-base font-bold;
   }
 
-  /* Mobile optimizations */
   @media (max-width: 640px) {
-    button, 
+    button,
     a {
       @apply min-h-[44px] min-w-[44px];
     }
-    
-    input, 
-    select, 
+
+    input,
+    select,
     textarea {
       @apply text-base;
     }
@@ -113,7 +117,6 @@
 }
 
 @layer utilities {
-  /* Scrollbar utilities */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }

@@ -1,12 +1,14 @@
+/* apps/nextapp/tailwind.config.ts */
+
 import type { Config } from 'tailwindcss';
 import { fontFamily } from 'tailwindcss/defaultTheme';
 import tailwindcssAnimate from 'tailwindcss-animate';
-import tailwindcssTypography from '@tailwindcss/aspect-ratio';
-import tailwindcssAspectRatio from '@tailwindcss/typography';
+import tailwindcssAspectRatio from '@tailwindcss/aspect-ratio';
+import tailwindcssTypography from '@tailwindcss/typography';
 
 const config = {
   darkMode: ['class'],
-  content: ['./src/**/*.{js,ts,jsx,tsx}'],
+  content: ['./src/**/*.{js,ts,jsx,tsx,css}'],
   prefix: '',
   theme: {
     container: {
@@ -106,42 +108,39 @@ const config = {
         'slide-in': 'slide-in 0.2s ease-out',
         'slide-out': 'slide-out 0.2s ease-out',
       },
-      // Mobile-friendly spacing
       spacing: {
         'safe-top': 'env(safe-area-inset-top)',
         'safe-bottom': 'env(safe-area-inset-bottom)',
         'safe-left': 'env(safe-area-inset-left)',
         'safe-right': 'env(safe-area-inset-right)',
       },
-      // Better touch targets
       minHeight: {
         'touch': '44px',
       },
       minWidth: {
         'touch': '44px',
       },
-      // Improved font sizes with line heights
       fontSize: {
-        'xs': ['0.875rem', { lineHeight: '1.25rem' }],     // 14px (up from 12px)
-        'sm': ['1rem', { lineHeight: '1.5rem' }],          // 16px (up from 14px)
-        'base': ['1.125rem', { lineHeight: '1.75rem' }],   // 18px (up from 16px)
-        'lg': ['1.25rem', { lineHeight: '1.875rem' }],     // 20px (up from 18px)
-        'xl': ['1.5rem', { lineHeight: '2rem' }],          // 24px (up from 20px)
-        '2xl': ['1.75rem', { lineHeight: '2.25rem' }],     // 28px (up from 24px)
-        '3xl': ['2rem', { lineHeight: '2.5rem' }],         // 32px (up from 30px)
-        '4xl': ['2.5rem', { lineHeight: '3rem' }],         // 40px (up from 36px)
-        '5xl': ['3rem', { lineHeight: '3.5rem' }],         // 48px
-        '6xl': ['3.75rem', { lineHeight: '4rem' }],        // 60px
+        'xs': ['0.875rem', { lineHeight: '1.25rem' }],
+        'sm': ['1rem', { lineHeight: '1.5rem' }],
+        'base': ['1.125rem', { lineHeight: '1.75rem' }],
+        'lg': ['1.25rem', { lineHeight: '1.875rem' }],
+        'xl': ['1.5rem', { lineHeight: '2rem' }],
+        '2xl': ['1.75rem', { lineHeight: '2.25rem' }],
+        '3xl': ['2rem', { lineHeight: '2.5rem' }],
+        '4xl': ['2.5rem', { lineHeight: '3rem' }],
+        '5xl': ['3rem', { lineHeight: '3.5rem' }],
+        '6xl': ['3.75rem', { lineHeight: '4rem' }],
       },
     },
   },
   plugins: [
     tailwindcssAnimate,
-    tailwindcssTypography,
     tailwindcssAspectRatio,
+    tailwindcssTypography,
   ],
   future: {
-    hoverOnlyWhenSupported: true, // Better hover states on mobile
+    hoverOnlyWhenSupported: true,
   },
 } satisfies Config;
 

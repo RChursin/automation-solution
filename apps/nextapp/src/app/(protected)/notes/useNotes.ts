@@ -1,4 +1,5 @@
-// apps/nextapp/src/app/(protected)/notes/useNotes.ts
+/* apps/nextapp/src/app/(protected)/notes/useNotes.ts */
+
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 interface Note {

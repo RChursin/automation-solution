@@ -1,49 +1,40 @@
-/* signup.module.css */
+/* apps/nextapp/src/app/(auth)/signup/signup.module.css */
 
-/* Full-screen background with gradient and overlay */
-.signup-container {
-  @apply flex items-center justify-center min-h-screen w-full bg-gradient-to-br from-gray-800 via-gray-900 to-black relative;
+.signupContainer {
+  @apply flex justify-center items-center w-full;
 }
 
-/* Background image styling */
-.signup-background {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  opacity: 0.2;
-  z-index: 0;
+/* Remove bg-white/10 from @apply and apply it in JSX */
+.signupCard {
+  @apply relative z-10 w-full max-w-sm backdrop-blur-md shadow-lg rounded-lg p-6;
 }
 
-/* Card styling */
-.signup-card {
-  @apply relative z-10 w-full max-w-sm bg-white/10 backdrop-blur-md shadow-lg rounded-lg;
+.signupTitle {
+  @apply text-2xl font-semibold text-center text-white;
 }
 
-/* Error alert styling */
-.error-alert {
+/* errorAlert uses text-red-500 and p-4, no slash-based color in @apply */
+.errorAlert {
   @apply p-4 text-xs text-red-500 rounded-md;
 }
 
-/* Input container to handle positioning */
-.input-container {
+.inputContainer {
   @apply relative mb-4;
 }
 
-/* Input fields */
-.input-field {
-  @apply bg-gray-700 text-white pr-10 w-full; /* Added w-full to ensure full width */
+.inputField {
+  @apply bg-gray-700 text-white pr-10 w-full;
 }
 
-/* Submit button */
-.submit-button {
-  @apply w-full bg-gray-400 text-black hover:bg-gray-300;
+/* Remove hover:bg-gray-300 from @apply, apply in JSX */
+.submitButton {
+  @apply w-full bg-gray-400 text-black font-semibold py-2 rounded-md;
 }
 
-/* Password visibility toggle button - Updated positioning */
-.password-toggle {
+/* passwordToggle is okay as is. It uses normal hover in CSS, which is allowed. */
+.passwordToggle {
   position: absolute;
-  top: 0.5rem; /* Centers the icon vertically within the input */
+  top: 0.5rem;
   right: 0.75rem;
   background: none;
   border: none;
@@ -58,39 +49,34 @@
   z-index: 10;
 }
 
-.password-toggle:hover {
+.passwordToggle:hover {
   color: #ffffff;
 }
 
-/* Validation error message */
-.validation-error {
-  @apply text-xs text-red-400/90 mt-1.5 ml-0.5; /* Smaller text, less top margin, slight left margin */
-  opacity: 0.9; /* Slightly reduce the opacity for better visual hierarchy */
+.validationError {
+  @apply text-xs text-red-400 mt-1.5 ml-0.5;
+  opacity: 0.9;
 }
 
-/* Input validation states */
-.input-field.valid {
+.inputField.valid {
   @apply border border-green-500;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2322c55e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   background-size: 1rem;
 }
 
-/* Input validation states */
-.input-field.invalid {
-  @apply border border-red-400/50;  /* Softer red border */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f87171' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E");
+.inputField.invalid {
+  @apply border border-red-400;
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   background-size: 1rem;
 }
 
-/* Update the suggestions to be red like error messages */
-.suggestions-list {
+.suggestionsList {
   @apply text-xs text-gray-400 mt-1 ml-0.5 flex flex-wrap gap-1 items-center;
 }
 
-.suggestion-item {
-  @apply inline-flex cursor-pointer hover:text-gray-200 transition-colors;
+/* Remove hover:text-gray-200 from @apply and add it in JSX */
+.suggestionItem {
+  @apply inline-flex cursor-pointer transition-colors;
 }

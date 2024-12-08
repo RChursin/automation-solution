@@ -1,4 +1,5 @@
-// apps/nextapp/src/app/(auth)/signup/page.tsx
+/* app/(auth)/signup/page.tsx */
+
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
@@ -10,12 +11,6 @@ import Link from 'next/link';
 import { useState } from 'react';
 import styles from './signup.module.css';
 
-/**
- * Signup Page Component
- * Provides a user-friendly signup form with validation, password visibility toggle, and enhanced UI feedback.
- *
- * @returns {JSX.Element} The signup form.
- */
 export default function Signup(): JSX.Element {
   const {
     username,
@@ -34,35 +29,26 @@ export default function Signup(): JSX.Element {
     validateField,
   } = useSignup();
 
-  // State for toggling password and confirm password visibility
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
   return (
-    <div className={styles['signup-container']}>
-      {/* Background Animation or Image */}
-      <div
-        className={styles['signup-background']}
-        style={{ backgroundImage: 'url("/background.jpg")' }}
-      />
-
-      {/* Signup Card */}
-      <Card className={styles['signup-card']}>
+    <div className={styles.signupContainer}>
+      {/* Add bg-white/10 here instead of @apply */}
+      <Card className={`${styles.signupCard} bg-white/10`}>
         <CardHeader>
-          <CardTitle className="text-2xl font-semibold text-center text-white">
-            Create an Account
-          </CardTitle>
+          <CardTitle className={styles.signupTitle}>Create an Account</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSignup} className="space-y-4">
-            {/* Error Message */}
-            {/* {error && (
-              <div role="alert" className={styles['error-alert']}>
+            {error && (
+              /* No slash-based colors in errorAlert @apply, so we can add any bg if needed */
+              <div role="alert" className={`${styles.errorAlert} bg-white/5`}>
                 {error}
               </div>
-            )} */}
+            )}
 
-            {/* Username Input with Suggestions */}
+            {/* Username Input */}
             <div>
               <Input
                 placeholder="Username*"
@@ -70,26 +56,30 @@ export default function Signup(): JSX.Element {
                 onChange={(e) => setUsername(e.target.value)}
                 onBlur={() => validateField('username')}
                 required
-                className={`${styles['input-field']} ${
-                  error === 'Username already exists' ? styles.invalid : 
-                  username && !error && !validationErrors.username ? styles.valid : ''
+                className={`${styles.inputField} ${
+                  error === 'Username already exists'
+                    ? styles.invalid
+                    : username && !error && !validationErrors.username
+                    ? styles.valid
+                    : ''
                 }`}
                 minLength={3}
               />
               {error === 'Username already exists' && (
-                <p className={styles['validation-error']}>
-                  Username already exists.
-                </p>
+                <p className={styles.validationError}>Username already exists.</p>
               )}
               {suggestions.length > 0 && (
-                <div className={styles['suggestions-list']}>
-                  Try: {suggestions.map((suggestion, index) => (
+                <div className={styles.suggestionsList}>
+                  Try:{' '}
+                  {suggestions.map((suggestion, index) => (
                     <div
                       key={index}
-                      className={styles['suggestion-item']}
+                      /* Add hover:text-gray-200 directly here in JSX */
+                      className={`${styles.suggestionItem} hover:text-gray-200`}
                       onClick={() => setUsername(suggestion)}
                     >
-                      {suggestion}{index < suggestions.length - 1 ? ', ' : ''}
+                      {suggestion}
+                      {index < suggestions.length - 1 ? ', ' : ''}
                     </div>
                   ))}
                 </div>
@@ -105,17 +95,15 @@ export default function Signup(): JSX.Element {
                 onChange={(e) => setEmail(e.target.value)}
                 onBlur={() => validateField('email')}
                 required
-                className={styles['input-field']}
+                className={styles.inputField}
               />
               {validationErrors.email && (
-                <p className={styles['validation-error']}>
-                  {validationErrors.email}
-                </p>
+                <p className={styles.validationError}>{validationErrors.email}</p>
               )}
             </div>
 
             {/* Password Input with Toggle */}
-            <div className={styles['input-container']}>
+            <div className={styles.inputContainer}>
               <Input
                 type={isPasswordVisible ? 'text' : 'password'}
                 placeholder="Password*"
@@ -123,25 +111,24 @@ export default function Signup(): JSX.Element {
                 onChange={(e) => setPassword(e.target.value)}
                 onBlur={() => validateField('password')}
                 required
-                className={styles['input-field']}
+                className={styles.inputField}
               />
               <button
                 type="button"
                 onClick={() => setIsPasswordVisible(!isPasswordVisible)}
-                className={styles['password-toggle']}
+                className={styles.passwordToggle}
                 aria-label={isPasswordVisible ? 'Hide password' : 'Show password'}
               >
                 {isPasswordVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
               {validationErrors.password && (
-                <p className={styles['validation-error']}>
-                  {validationErrors.password}
-                </p>
+                <p className={styles.validationError}>{validationErrors.password}</p>
               )}
             </div>
 
             {/* Confirm Password Input with Toggle */}
-            <div className={styles['input-container']}>
+            <div className={styles.inputContainer}>
+              {/* opacity-50 is allowed in JSX. It's a standard class. */}
               <Input
                 type={isConfirmPasswordVisible ? 'text' : 'password'}
                 placeholder="Confirm Password*"
@@ -149,27 +136,25 @@ export default function Signup(): JSX.Element {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 onBlur={() => validateField('confirmPassword')}
                 required
-                className={styles['input-field']}
+                className={`${styles.inputField} opacity-50`}
               />
               <button
                 type="button"
                 onClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
-                className={styles['password-toggle']}
+                className={styles.passwordToggle}
                 aria-label={isConfirmPasswordVisible ? 'Hide password' : 'Show password'}
               >
                 {isConfirmPasswordVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
               {validationErrors.confirmPassword && (
-                <p className={styles['validation-error']}>
-                  {validationErrors.confirmPassword}
-                </p>
+                <p className={styles.validationError}>{validationErrors.confirmPassword}</p>
               )}
             </div>
 
-            {/* Submit Button */}
+            {/* Add hover:bg-gray-300 directly in JSX for the submit button */}
             <Button
               type="submit"
-              className={styles['submit-button']}
+              className={`${styles.submitButton} hover:bg-gray-300`}
               disabled={isLoading}
             >
               {isLoading ? (
