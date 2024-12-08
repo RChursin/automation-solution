@@ -34,22 +34,23 @@ export default function BlogPage() {
   ];
 
   return (
-    <>
-      {/* Add bg-background/95 directly here */}
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
+      {/* Header */}
       <header className={`${styles.blogHeader} bg-background/95`}>
-        <div className="container">
+        <div className="container mx-auto">
           <h2 className={styles.blogTitle}>Blog & Articles</h2>
         </div>
       </header>
 
-      <section className={styles.blogSection}>
-        <div className="container">
-          {/* Add bg-background/60 to contentCard here */}
+      {/* Main Content */}
+      <main className="flex-1 py-10">
+        <div className="container mx-auto px-6">
+          {/* Content Card */}
           <Card className={`${styles.contentCard} bg-background/60`}>
             <div className={styles.cardInner}>
               <div className={styles.headerRow}>
                 <h1 className={styles.heroTitle}>Explore the Latest</h1>
-                {/* Add hover:bg-gray-300 directly in JSX for newPostButton */}
+                {/* Apply hover:bg-gray-300 here */}
                 <Button className={`${styles.newPostButton} hover:bg-gray-300`}>
                   New Post
                   <Pencil className="ml-2 h-4 w-4" />
@@ -63,9 +64,9 @@ export default function BlogPage() {
               <div className={styles.blogGrid}>
                 {posts.map((post, index) => (
                   /* Add bg-background/60 and hover:bg-background/70 here for blogCard */
-                  <Card
+                  <Card 
                     key={index}
-                    className={`${styles.blogCard} bg-background/60 hover:bg-background/70`}
+                    className={`${styles.blogCard} bg-background/60 hover:bg-background/70 p-4 transition-colors`}
                   >
                     <CardHeader>
                       <post.icon className="h-8 w-8 text-gray-400 mb-2" />
@@ -93,16 +94,15 @@ export default function BlogPage() {
             <p>Last Updated: Today</p>
           </div>
         </div>
-      </section>
+      </main>
 
+      {/* Footer */}
       <footer className={styles.blogFooter}>
-        <div className="container">
-          <div className="flex justify-between text-sm text-muted-foreground">
-            <p>© 2024 The Source Build</p>
-            <p>RChursin 💡</p>
-          </div>
+        <div className="container mx-auto flex justify-between text-sm text-muted-foreground">
+          <p>© 2024 The Source Build</p>
+          <p>RChursin 💡</p>
         </div>
       </footer>
-    </>
+    </div>
   );
 }

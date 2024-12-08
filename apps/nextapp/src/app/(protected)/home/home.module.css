@@ -1,9 +1,6 @@
 /* apps/nextapp/src/app/(protected)/home/home.module.css */
 
 .header {
-  /* Previously included supports-[backdrop-filter]:bg-background/60 instructions,
-     now just use base classes in @apply. 
-     Remove bg-background/95 from @apply and apply in JSX. */
   @apply border-b border-border backdrop-blur p-6;
 }
 
@@ -31,7 +28,7 @@
   @apply grid gap-6 md:grid-cols-2 lg:grid-cols-3;
 }
 
-/* Remove bg-background/60 from @apply and apply in JSX */
 .card {
   @apply backdrop-blur rounded-lg border;
 }
+
