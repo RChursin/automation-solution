@@ -4,7 +4,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
 import { Input } from '../../../components/ui/input';
-import { Button } from '../../../components/ui/button';
+import { Button } from '../../../components/ui/button/button';
 import { Loader2, Eye, EyeOff } from 'lucide-react';
 import { useLogin } from './useLogin';
 import Link from 'next/link';

@@ -41,6 +41,7 @@ export const authOptions: AuthOptions = {
             id: user._id.toString(),
             email: user.email,
             username: user.username,
+            image: user.image,
           };
         } catch (error) {
           console.error('Auth error:', error);

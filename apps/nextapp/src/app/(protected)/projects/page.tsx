@@ -1,6 +1,6 @@
 /* apps/nextapp/src/app/(protected)/projects/page.tsx */
 
-import { Button } from '../../../components/ui/button';
+import { Button } from '../../../components/ui/button/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
 import { FolderGit2, GitBranch, GitPullRequest } from 'lucide-react';
 import styles from './projects.module.css';

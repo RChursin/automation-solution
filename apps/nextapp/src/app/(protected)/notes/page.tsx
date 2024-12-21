@@ -2,7 +2,7 @@
 
 'use client';
 
-import { Button } from "../../../components/ui/button";
+import { Button } from "../../../components/ui/button/button";
 import { Input } from "../../../components/ui/input";
 import { Plus, Save, Trash2 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
