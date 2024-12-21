@@ -1,6 +1,6 @@
 /* apps/nextapp/src/app/(protected)/blog/page.tsx */
 
-import { Button } from '../../../components/ui/button';
+import { Button } from '../../../components/ui/button/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
 import { BookOpen, Pencil, Tags, Bookmark } from 'lucide-react';
 import styles from './blog.module.css';

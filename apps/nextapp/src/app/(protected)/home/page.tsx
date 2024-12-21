@@ -4,7 +4,7 @@ import { getServerSession } from 'next-auth';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { authOptions } from '../../../lib/auth/options';
-import { Button } from '../../../components/ui/button';
+import { Button } from '../../../components/ui/button/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../../components/ui/card';
 import styles from './home.module.css';
 

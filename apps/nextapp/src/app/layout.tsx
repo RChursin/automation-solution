@@ -4,7 +4,7 @@ import './globals.css';
 import { Providers } from './providers';
 
 export const metadata = {
-  title: 'My App',
+  title: 'The Source Build',
 };
 
 export default function RootLayout({

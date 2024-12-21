@@ -5,7 +5,7 @@ import { Sidebar } from '../../components/navigation/sidebar';
 import styles from './layout.module.css';
 
 export const metadata = {
-  title: 'Dashboard',
+  title: 'The Source Build',
 };
 
 export default function ProtectedLayout({ children }: { children: React.ReactNode }) {

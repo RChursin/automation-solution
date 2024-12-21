@@ -1,11 +1,8 @@
 /* apps/nextapp/src/components/themes/theme-toggle.tsx */
-
 'use client';
 
 import * as React from 'react';
-import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { Button } from '../../components/ui/button';
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -15,19 +12,30 @@ export function ThemeToggle() {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted) return null; // Wait until after hydration
+
+  const isDark = theme === 'dark';
 
   const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
+    setTheme(isDark ? 'light' : 'dark');
   };
 
   return (
-    <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Toggle theme">
-      {theme === 'dark' ? (
-        <Moon className="h-5 w-5 text-blue-500" />
-      ) : (
-        <Sun className="h-5 w-5 text-yellow-500" />
-      )}
-    </Button>
+    <button
+      onClick={toggleTheme}
+      aria-label="Toggle theme"
+      className={`
+        relative inline-flex h-6 w-11 items-center rounded-full
+        transition-colors
+        ${isDark ? 'bg-gray-700' : 'bg-gray-300'}
+      `}
+    >
+      <span
+        className={`
+          inline-block h-4 w-4 transform rounded-full bg-white transition-transform
+          ${isDark ? 'translate-x-5' : 'translate-x-1'}
+        `}
+      />
+    </button>
   );
 }
